@@ -1,0 +1,9 @@
+@import "../../app/app";
+
+h-guide-card {
+
+  ion-card-header {
+    @extend %h-card-header;
+  }
+
+}

@@ -1,1 +1,27 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-nav [root]="rootPage" #mainNav></ion-nav>
+<ion-menu [content]="mainNav" type="overlay">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item>
+        <span
+          *ngFor="let breadcrumb of breadcrumbs"
+          (click)="actionBreadcrumb(breadcrumb)"
+          [ngClass]="{'breadcrumb-inactive' : breadcrumb.root}">
+          {{ breadcrumb.name }}>
+        </span>
+      </ion-item>
+      <button
+        *ngFor="let category of menuCategories"
+        (click)="populateMenuCategories(category)"
+        ion-item>
+        {{ category.name }}
+      </button>
+      <ion-item menuClose>Close</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>

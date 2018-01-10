@@ -1,0 +1,38 @@
+<ion-card>
+  <ion-card-header>Registration</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="email"
+          type="email"
+          placeholder="Your Email..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="password"
+          type="password"
+          placeholder="Your Password..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="passwordConfirmation"
+          type="password"
+          placeholder="Confirm your password..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="username"
+          placeholder="Username(optional)..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <button
+          ion-button
+          full
+          color="orange"
+          (click)="doRegister()">Register</button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+
+</ion-card>

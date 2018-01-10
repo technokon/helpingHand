@@ -1,0 +1,69 @@
+<ion-card>
+  <ion-card-header>Ad Details</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="ad.title"
+          placeholder="Your Ad Title..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-textarea
+          rows="5"
+          [(ngModel)]="ad.description"
+          placeholder="Your Ad Description..."></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Ad Pictures</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="ad.pictures"
+          placeholder="Drag Your Pictures here or press upload button below..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <button
+          color="grey"
+          ion-button
+          (click)="uploadPictures()">
+          Upload Pictures
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Location</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="ad.location"
+          placeholder="Your Ad Zip Code..."></ion-input>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Post Your Ad</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item class="align-center">
+        <button
+        ion-button
+        color="orange"
+        large
+        (click)="postAd()">
+          Post Ad!
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

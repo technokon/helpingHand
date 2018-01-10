@@ -1,3 +1,4 @@
+@import "../theme/variables";
 // http://ionicframework.com/docs/theming/
 
 
@@ -14,3 +15,23 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+// consider using @mixins or %placeholders
+%h-card-header {
+  text-align: center;
+  font-weight: bold;
+  color: $h-light-grey !important;
+}
+
+@mixin make-h-icon($color:$h-orange, $font-size: 3rem ) {
+  color: $color;
+  font-size: $font-size;
+}
+
+
+ion-menu {
+  span {
+    &.breadcrumb-inactive {
+      color: grey;
+    }
+  }
+}

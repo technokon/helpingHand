@@ -1,0 +1,20 @@
+page-detail {
+
+  ion-card-header {
+    @extend %h-card-header;
+  }
+
+  ion-item {
+    .align-center {
+      text-align: center;
+    }
+
+    p {
+      &.wrap-text {
+        overflow-wrap: break-word;
+        white-space: normal;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,20 @@
+<ion-card>
+  <ion-card-header>
+    {{ confirmationContent.header }}
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <p *ngFor="let item of confirmationContent.items">
+          {{ item }}
+        </p>
+      </ion-item>
+      <ion-item>
+        <ion-icon
+          class="confirmation-icon"
+        name="checkmark-circle">
+        </ion-icon>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

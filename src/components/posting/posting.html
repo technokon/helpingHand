@@ -1,0 +1,125 @@
+<!-- Generated template for the PostingComponent component -->
+<ion-grid *ngIf="flat">
+  <ion-row
+    *ngIf="!adPosted"
+    justify-content-center>
+    <ion-col col-6>
+      <h-registration
+        item-left
+        *ngIf="!session.loggedIn">
+      </h-registration>
+      <h-posting-form
+        item-left
+        (event.postingForm.posted)="onAdPosted($event)"
+        *ngIf="session.loggedIn">
+      </h-posting-form>
+    </ion-col>
+    <ion-col col-3>
+      <h-guide-card
+        *ngIf="!adPosted"
+        item-right
+        [guideContent]="getGuideContent()">
+      </h-guide-card>
+    </ion-col>
+  </ion-row>
+  <ion-row
+    *ngIf="adPosted">
+    <ion-col>
+      <h-confirmation-card
+        [confirmationContent]="getConfirmationContent()">
+      </h-confirmation-card>
+    </ion-col>
+    <ion-col>
+      <ion-card>
+        <ion-card-header>
+          Ad Actions
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row justify-content-center>
+            <ion-col>
+              <button
+                ion-button
+                color="orange"
+                large
+                (click)="viewAd()">
+                View My Ad
+              </button>
+            </ion-col>
+            <ion-col>
+              <button
+                ion-button
+                color="orange"
+                large
+                (click)="editAd()">
+                Edit My Ad
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<ion-grid *ngIf="!flat">
+  <ion-row
+    *ngIf="!adPosted">
+    <ion-col>
+      <h-guide-card
+        item-right
+        [guideContent]="getGuideContent()">
+      </h-guide-card>
+    </ion-col>
+  </ion-row>
+  <ion-row
+    *ngIf="!adPosted">
+    <ion-col>
+      <h-registration
+        item-left
+        *ngIf="!session.loggedIn">
+      </h-registration>
+      <h-posting-form
+        item-left
+        (event.postingForm.posted)="onAdPosted($event)"
+        *ngIf="session.loggedIn">
+      </h-posting-form>
+    </ion-col>
+  </ion-row>
+  <ion-row
+    *ngIf="adPosted">
+    <ion-col>
+      <h-confirmation-card
+      [confirmationContent]="getConfirmationContent()">
+      </h-confirmation-card>
+    </ion-col>
+    <ion-col>
+      <ion-card>
+        <ion-card-header>
+          Ad Actions
+        </ion-card-header>
+        <ion-card-content>
+          <ion-row justify-content-center>
+            <ion-col>
+              <button
+                ion-button
+                color="orange"
+                large
+                (click)="viewAd()">
+                View My Ad
+              </button>
+            </ion-col>
+            <ion-col>
+              <button
+                ion-button
+                color="orange"
+                large
+                (click)="editAd()">
+                Edit My Ad
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>

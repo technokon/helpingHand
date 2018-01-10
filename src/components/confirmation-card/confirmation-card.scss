@@ -1,0 +1,11 @@
+@import "../../app/app";
+
+h-confirmation-card {
+  ion-card-header {
+    @extend %h-card-header;
+  }
+
+  .confirmation-icon {
+    @include make-h-icon;
+  }
+}
