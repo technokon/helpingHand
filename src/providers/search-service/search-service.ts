@@ -13,18 +13,27 @@ export class SearchServiceProvider {
 
   private categorySearchObserver;
   private categorySearchObservable;
+  private showSearchObserver;
+  private showSearchObservable;
+
   constructor(public http: HttpClient) {
-    console.log('Hello SearchServiceProvider Provider');
     this.init();
   }
 
   init() {
     this.createCategorySearchObservable();
+    this.createshowSearchObservable();
   }
 
   private createCategorySearchObservable() {
     this.categorySearchObservable = Observable.create(observer => {
       this.categorySearchObserver = observer;
+    });
+  }
+
+  private createshowSearchObservable() {
+    this.showSearchObservable = Observable.create(observer => {
+      this.showSearchObserver = observer;
     });
   }
 
@@ -34,6 +43,14 @@ export class SearchServiceProvider {
 
   getCategorySearch() {
     return this.categorySearchObservable;
+  }
+
+  getShowSearch() {
+    return this.showSearchObservable;
+  }
+
+  getShowSearchObserver() {
+    return this.showSearchObserver;
   }
 
 }

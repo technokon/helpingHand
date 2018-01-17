@@ -1,0 +1,120 @@
+<ion-list *ngIf="!platform.isLandscape()">
+  <ion-item>
+    <ion-input
+      [(ngModel)]="search"
+      placeholder="Search..."></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input
+      [(ngModel)]="category"
+      placeholder="Category..."></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-input
+      [(ngModel)]="location"
+      placeholder="Location..."></ion-input>
+  </ion-item>
+  <ion-item>
+    <button
+      ion-button
+      full
+      color="orange"
+      (click)="doSearch()">Search</button>
+  </ion-item>
+</ion-list>
+
+<ion-list *ngIf="platform.isLandscape()">
+  <ion-grid>
+    <ion-row justify-content-center>
+      <ion-col col-2>
+        <ion-item>
+          <ion-input
+            [(ngModel)]="search"
+            clearInput
+            placeholder="Search..."></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+        <ion-item>
+          <ion-input
+            clearInput
+            [(ngModel)]="category"
+            placeholder="Category..."></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+        <ion-item>
+          <ion-input
+            clearInput
+            [(ngModel)]="location"
+            placeholder="Location..."></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col col-2>
+          <button
+            ion-button
+            full
+            color="orange"
+            (click)="doSearch()">Search</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-list>
+
+<ion-grid>
+  <ion-row [attr.justify-content-center]="platform.isLandscape() ? true : null">
+    <ion-col [attr.col-8]="platform.isLandscape() ? true : null">
+      <ion-card
+        *ngFor="let posting of postings | async"
+        (click)="pushPage(posting)">
+
+        <ion-row>
+          <ion-col col-2>
+            <img
+              class="search-image"
+              *ngIf="posting.pictures"
+              [src]="posting.pictures[0].url">
+          </ion-col>
+
+          <ion-col col-10>
+            <ion-card-content>
+              <ion-card-title>
+                {{ posting.title }}
+              </ion-card-title>
+
+              <ion-item item-right>
+                <p>
+                  {{ posting.description }}
+                </p>
+              </ion-item>
+
+            </ion-card-content>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <!--<ion-item-sliding-->
+  <!--*ngFor="let person of people"-->
+  <!--(click)="pushPage(person)">-->
+  <!--<ion-item>-->
+  <!--<ion-avatar item-left>-->
+  <!--<img [src]="person.picture.thumbnail">-->
+  <!--</ion-avatar>-->
+  <!--{{ person.name.first }} {{ person.name.last }}-->
+  <!--<ion-note item-right>{{ person.phone }}</ion-note>-->
+  <!--</ion-item>-->
+
+  <!--<ion-item-options side="left">-->
+  <!--<button ion-button>-->
+  <!--<ion-icon name="archive"></ion-icon>-->
+  <!--</button>-->
+  <!--</ion-item-options>-->
+  <!--<ion-item-options side="right">-->
+  <!--<button ion-button>-->
+  <!--<ion-icon name="flag"></ion-icon>-->
+  <!--</button>-->
+  <!--</ion-item-options>-->
+  <!--</ion-item-sliding>-->
+</ion-grid>

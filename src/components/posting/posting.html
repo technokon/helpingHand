@@ -11,6 +11,7 @@
       <h-posting-form
         item-left
         (event.postingForm.posted)="onAdPosted($event)"
+        (event.postingForm.cancelled)="onAdCanceled($event)"
         *ngIf="session.loggedIn">
       </h-posting-form>
     </ion-col>
@@ -81,6 +82,7 @@
       <h-posting-form
         item-left
         (event.postingForm.posted)="onAdPosted($event)"
+        (event.postingForm.cancelled)="onAdCanceled($event)"
         *ngIf="session.loggedIn">
       </h-posting-form>
     </ion-col>

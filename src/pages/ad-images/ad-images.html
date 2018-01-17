@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Images</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row [attr.justify-content-center]="platform.isLandscape() ? true : null">
+      <ion-col [attr.col-8]="platform.isLandscape() ? true : null">
+        <ion-slides pager>
+          <ion-slide
+            (ionSlideDidChange)="slideChanged()"
+            *ngFor="let pic of images">
+            <ion-card>
+              <img
+                class="slider-image"
+                [src]="pic.url">
+            </ion-card>
+          </ion-slide>
+        </ion-slides>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

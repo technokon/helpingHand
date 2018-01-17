@@ -12,22 +12,16 @@ import {SearchServiceProvider} from '../../providers/search-service/search-servi
 })
 export class HomePage {
 
-  public postings = [];
   public shouldReorder = false;
   public showSearch = false;
-  public showSearchResults;
-  public search;
-  public category;
-  public location;
   public showPostAd;
 
   constructor(
     public navCtrl: NavController,
-    public service: PeopleProvider,
     public service2: FirebaseServiceProvider,
     public modalCtrl: ModalController,
     private searchService: SearchServiceProvider) {
-    this.subscribeToMeanuSearch();
+    this.subscribeToSearch();
   }
 
   toggleReorder() {
@@ -35,62 +29,21 @@ export class HomePage {
   }
 
   toggleSearch() {
-    this.showSearch = !this.showSearch;
+    this.searchService.getShowSearchObserver().next(!this.showSearch);
     this.showPostAd = false;
   }
 
   togglePostAd() {
     this.showPostAd = !this.showPostAd;
-    this.showSearchResults = false;
     this.showSearch = false;
   }
 
-  doRefresh(e) {
-    this.service2.getPostings().subscribe(
-      data => this.postings,
-      error => console.log(error),
-      () => e.complete(),
-    )
+  onPostingCancelled() {
+    this.showPostAd = false;
   }
 
-  doSearch() {
-    this.service2.getPostings().subscribe(
-      data => {
-        this.postings = data;
-        this.showSearchResults = true;
-      },
-      error => console.log(error),
-      //() => e.complete(),
-    )
-  }
-
-  doInfinite(e) {
-    this.service2.getPostings().subscribe(
-      data => this.postings = data,
-      error => console.log(error),
-      () => e.complete(),
-    )
-  }
-
-  pushPage(posting) {
-    this.navCtrl.push(DetailPage, posting);
-    //this.modalCtrl.create(DetailPage, user).present();
-  }
-
-  private subscribeToMeanuSearch() {
-    this.searchService.getCategorySearch().subscribe(searchCategory => {
-      this.searchByCategory(searchCategory);
-    });
-  }
-
-  private searchByCategory(searchCategory) {
-    this.service2.getPostingByCategory(searchCategory).subscribe(
-      data => {
-          this.postings = data;
-          this.showSearch = false;
-          this.showPostAd = false;
-          this.showSearchResults = true;
-        },
-        error => console.log(error));
+  subscribeToSearch() {
+    this.searchService.getShowSearch()
+      .subscribe(show => this.showSearch = show);
   }
 }

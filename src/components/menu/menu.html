@@ -1,0 +1,17 @@
+<ion-list>
+  <ion-item>
+    <span
+      *ngFor="let breadcrumb of breadcrumbs"
+      (click)="actionBreadcrumb(breadcrumb)"
+      [ngClass]="{'breadcrumb-inactive' : breadcrumb.root}">
+      {{ breadcrumb.name }}>
+    </span>
+  </ion-item>
+  <button
+    *ngFor="let category of menuCategories"
+    (click)="onCategorySelect(category)"
+    ion-item>
+    {{ category.name }}
+  </button>
+  <ion-item menuClose>Close</ion-item>
+</ion-list>

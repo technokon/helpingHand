@@ -6,6 +6,8 @@ import { GuideCardComponent } from './guide-card/guide-card';
 import { PostingFormComponent } from './posting-form/posting-form';
 import { ConfirmationCardComponent } from './confirmation-card/confirmation-card';
 import { MapCardComponent } from './map-card/map-card';
+import { SearchComponent } from './search/search';
+import { MenuComponent } from './menu/menu';
 
 @NgModule({
 	declarations: [
@@ -15,6 +17,8 @@ import { MapCardComponent } from './map-card/map-card';
     PostingFormComponent,
     ConfirmationCardComponent,
     MapCardComponent,
+    SearchComponent,
+    MenuComponent,
   ],
 	imports: [
     IonicPageModule.forChild(RegistrationComponent),
@@ -26,6 +30,8 @@ import { MapCardComponent } from './map-card/map-card';
     PostingFormComponent,
     ConfirmationCardComponent,
     MapCardComponent,
+    SearchComponent,
+    MenuComponent,
   ]
 })
 export class ComponentsModule {}

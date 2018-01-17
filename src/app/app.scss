@@ -26,12 +26,3 @@
   color: $color;
   font-size: $font-size;
 }
-
-
-ion-menu {
-  span {
-    &.breadcrumb-inactive {
-      color: grey;
-    }
-  }
-}

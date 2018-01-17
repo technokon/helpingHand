@@ -16,6 +16,9 @@ import { FirebaseServiceProvider } from '../providers/firebase-service/firebase-
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { SearchServiceProvider } from '../providers/search-service/search-service';
+import { CategoryServiceProvider } from '../providers/category-service/category-service';
+import { UploadServiceProvider } from '../providers/upload-service/upload-service';
+import {AdImagesPage} from '../pages/ad-images/ad-images';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -32,6 +35,7 @@ const firebaseConfig = {
     MyApp,
     HomePage,
     DetailPage,
+    AdImagesPage,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +50,7 @@ const firebaseConfig = {
     MyApp,
     HomePage,
     DetailPage,
+    AdImagesPage,
   ],
   providers: [
     StatusBar,
@@ -56,6 +61,8 @@ const firebaseConfig = {
     AdProvider,
     FirebaseServiceProvider,
     SearchServiceProvider,
+    CategoryServiceProvider,
+    UploadServiceProvider,
   ]
 })
 export class AppModule {}

@@ -11,14 +11,12 @@
         <ion-card
           item-left>
           <ion-card-header>
-            {{ posting.title }}
+            {{ posting.title }} posted on {{ posting.datePosted }}
           </ion-card-header>
-          <ion-item>
-            <ion-avatar item-left>
-              <!--<img [src]="user.picture.large">-->
-            </ion-avatar>
-          </ion-item>
-          <img src="https://unsplash.it/300/150">
+          <img
+            *ngIf="posting.pictures"
+            (click)="gotToSlides()"
+            [src]="posting.pictures[0].url">
 
           <ion-card-content>
             <ion-item>
@@ -54,12 +52,10 @@
           <ion-card-header>
             {{ posting.title }}
           </ion-card-header>
-          <ion-item>
-            <ion-avatar item-left>
-              <!--<img [src]="user.picture.large">-->
-            </ion-avatar>
-          </ion-item>
-          <img src="https://unsplash.it/300/150">
+          <img
+            *ngIf="posting.pictures"
+            (click)="gotToSlides()"
+            [src]="posting.pictures[0].url">
 
           <ion-card-content>
             <ion-item>

@@ -13,6 +13,27 @@
           [(ngModel)]="ad.description"
           placeholder="Your Ad Description..."></ion-textarea>
       </ion-item>
+      <ion-item>
+        <ion-label>Top Category</ion-label>
+        <ion-select [(ngModel)]="topCategory">
+          <ion-option
+            [value]="topCategory"
+            *ngFor="let topCategory of categories">
+            {{ topCategory.name }}
+          </ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="topCategory">
+        <ion-label>Child Category</ion-label>
+        <ion-select [(ngModel)]="ad.category">
+          <ion-option
+            *ngFor="let category of topCategory.kids"
+            (ionSelect)="onChildCategorySelect(category)"
+            [value]="category.id">
+            {{ category.name }}
+          </ion-option>
+        </ion-select>
+      </ion-item>
     </ion-list>
   </ion-card-content>
 </ion-card>
@@ -21,18 +42,16 @@
   <ion-card-header>Ad Pictures</ion-card-header>
   <ion-card-content>
     <ion-list>
+      <!--<ion-item>-->
+        <!--<ion-input-->
+          <!--[(ngModel)]="ad.pictures"-->
+          <!--placeholder="Drag Your Pictures here or press upload button below..."></ion-input>-->
+      <!--</ion-item>-->
       <ion-item>
-        <ion-input
-          [(ngModel)]="ad.pictures"
-          placeholder="Drag Your Pictures here or press upload button below..."></ion-input>
-      </ion-item>
-      <ion-item>
-        <button
-          color="grey"
-          ion-button
-          (click)="uploadPictures()">
-          Upload Pictures
-        </button>
+        <input
+          type="file"
+          (change)="detectFiles($event)"
+          multiple>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -56,6 +75,13 @@
   <ion-card-content>
     <ion-list>
       <ion-item class="align-center">
+        <button
+        ion-button
+        color="light"
+        large
+        (click)="cancelAd()">
+          Cancel
+        </button>
         <button
         ion-button
         color="orange"

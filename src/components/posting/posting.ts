@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { SessionServiceProvider } from '../../providers/session-service/session-service';
 
@@ -16,6 +16,8 @@ export class PostingComponent {
 
   public guideContent = this.getGuideContent();
   public adPosted  = false;
+
+  @Output('event.posting.cancelled') postingCancelled: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     public session: SessionServiceProvider,
@@ -58,6 +60,12 @@ export class PostingComponent {
     if ($event && $event.result === 'success') {
       this.adPosted = true;
     }
+  }
+
+  onAdCanceled($event) {
+    this.postingCancelled.emit({
+      success: true,
+    });
   }
 
   viewAd() {

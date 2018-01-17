@@ -7,6 +7,7 @@ import {
   AlertController,
   Platform,
 } from 'ionic-angular';
+import {AdImagesPage} from '../ad-images/ad-images';
 
 /**
  * Generated class for the DetailPage page.
@@ -70,5 +71,9 @@ export class DetailPage {
 
   get flat() {
     return this.platform.isLandscape();
+  }
+
+  gotToSlides() {
+    this.navCtrl.push(AdImagesPage, this.posting.pictures);
   }
 }

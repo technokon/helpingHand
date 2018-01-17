@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable, OnInit} from '@angular/core';
-import {AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
+import {Observable} from 'rxjs/Observable';
+import {fromPromise} from 'rxjs/observable/fromPromise';
 import 'rxjs/add/observable/fromPromise';
+import {UploadServiceProvider} from '../upload-service/upload-service';
 
 /*
   Generated class for the FirebaseServiceProvider provider.
@@ -19,25 +20,33 @@ export class FirebaseServiceProvider {
   postings: Observable<any>;
   categories: Observable<any>;
 
-  constructor(
-    public http: HttpClient,
-    private angularFireStore: AngularFirestore ) {
+  constructor(public http: HttpClient,
+              private angularFireStore: AngularFirestore,
+              private uploadService: UploadServiceProvider,) {
     this.init();
   }
 
   init() {
     this.postingsCollection = this.angularFireStore.collection('postings',
-        ref => ref.orderBy('title'));
+      ref => ref.orderBy('title'));
     this.postings = this.postingsCollection.valueChanges();
 
     this.categoryCollection = this.angularFireStore.collection('categories',
-        ref => ref.where('parents', '==', null));
+      ref => ref.where('parents', '==', null));
     this.categories = this.categoryCollection.snapshotChanges();
   }
 
-  addPosting(posting) {
+  addPosting(posting, files) {
+    let collection = this.angularFireStore.collection('postings');
+    let futurePostingId = collection.ref.doc().id;
+    let imagePromise = this.uploadService.simpleUpload(files, futurePostingId)
+      .then(snapshots => {
+        posting.pictures.push(...snapshots);
+        return collection.add(posting);
+      });
+
     return Observable
-      .fromPromise(this.angularFireStore.collection('postings').add(posting));
+      .fromPromise(imagePromise);
   }
 
   getPostings() {
@@ -58,6 +67,19 @@ export class FirebaseServiceProvider {
       .collection('categories')
       .snapshotChanges()
       .map(this.mapSnapshot)
+      .map(this.buildCategoryHierarchy)
+  }
+
+  private buildCategoryHierarchy(categories) {
+    let topCategories = categories.filter(c => !c.parents);
+    topCategories.forEach(tc => {
+      tc.kids = [];
+      tc.children.forEach(ch => {
+        tc.kids.push(categories.find(c => c.id === ch));
+      });
+    });
+
+    return topCategories;
   }
 
   private mapSnapshot(snapshot) {

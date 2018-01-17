@@ -28,97 +28,23 @@
 
 <ion-content padding>
 
-  <ion-refresher
-    *ngIf="showSearchResults"
-    (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  <!--<ion-refresher-->
+    <!--*ngIf="showSearchResults"-->
+    <!--(ionRefresh)="doRefresh($event)">-->
+    <!--<ion-refresher-content></ion-refresher-content>-->
+  <!--</ion-refresher>-->
 
-  <ion-list *ngIf="showSearch">
-    <ion-item>
-      <ion-input
-        [(ngModel)]="search"
-        placeholder="Search..."></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input
-        [(ngModel)]="category"
-        placeholder="Category..."></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input
-        [(ngModel)]="location"
-        placeholder="Location..."></ion-input>
-    </ion-item>
-    <ion-item>
-      <button
-        ion-button
-        full
-        color="orange"
-        (click)="doSearch()">Search</button>
-    </ion-item>
-  </ion-list>
+  <h-search
+    [hidden]="!showSearch">
+  </h-search>
 
-  <ion-grid *ngIf="showSearchResults">
-    <ion-card
-      *ngFor="let posting of postings"
-    (click)="pushPage(posting)">
+  <h-posting
+    (event.posting.cancelled)="onPostingCancelled($event)"
+    *ngIf="showPostAd"></h-posting>
 
-      <ion-row>
-
-        <ion-col col-2>
-          <img src="https://unsplash.it/100/100">
-        </ion-col>
-
-        <ion-col col-10>
-          <ion-card-content>
-            <ion-card-title>
-              {{ posting.title }}
-            </ion-card-title>
-
-            <ion-item item-right>
-              <p>
-                {{ posting.description }}
-              </p>
-            </ion-item>
-
-          </ion-card-content>
-        </ion-col>
-
-
-
-      </ion-row>
-    </ion-card>
-
-    <!--<ion-item-sliding-->
-      <!--*ngFor="let person of people"-->
-      <!--(click)="pushPage(person)">-->
-      <!--<ion-item>-->
-        <!--<ion-avatar item-left>-->
-          <!--<img [src]="person.picture.thumbnail">-->
-        <!--</ion-avatar>-->
-        <!--{{ person.name.first }} {{ person.name.last }}-->
-        <!--<ion-note item-right>{{ person.phone }}</ion-note>-->
-      <!--</ion-item>-->
-
-      <!--<ion-item-options side="left">-->
-        <!--<button ion-button>-->
-          <!--<ion-icon name="archive"></ion-icon>-->
-        <!--</button>-->
-      <!--</ion-item-options>-->
-      <!--<ion-item-options side="right">-->
-        <!--<button ion-button>-->
-          <!--<ion-icon name="flag"></ion-icon>-->
-        <!--</button>-->
-      <!--</ion-item-options>-->
-    <!--</ion-item-sliding>-->
-  </ion-grid>
-
-  <h-posting *ngIf="showPostAd"></h-posting>
-
-  <ion-infinite-scroll
-    *ngIf="showSearchResults"
-    (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  <!--<ion-infinite-scroll-->
+    <!--*ngIf="showSearchResults"-->
+    <!--(ionInfinite)="doInfinite($event)">-->
+    <!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
+  <!--</ion-infinite-scroll>-->
 </ion-content>
