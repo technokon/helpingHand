@@ -7,17 +7,22 @@
 <ion-content padding>
   <ion-grid *ngIf="flat">
     <ion-row justify-content-center>
-      <ion-col col-6>
+      <ion-col col-5>
+        <ion-icon
+          *ngIf="posting.pictures"
+          class="images-icon"
+          name="images">
+          {{ posting.pictures.length }}
+        </ion-icon>
         <ion-card
           item-left>
-          <ion-card-header>
-            {{ posting.title }} posted on {{ posting.datePosted }}
-          </ion-card-header>
           <img
             *ngIf="posting.pictures"
             (click)="gotToSlides()"
             [src]="posting.pictures[0].url">
-
+          <ion-card-header class="wrap">
+            {{ posting.title }} posted on {{ posting.datePosted }}
+          </ion-card-header>
           <ion-card-content>
             <ion-item>
               <h2>{{ posting.location }}</h2>
@@ -40,6 +45,8 @@
           item-right
           [zipCode]="posting.location">>
         </h-map-card>
+        <h-contact-card>
+        </h-contact-card>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -47,15 +54,22 @@
   <ion-grid *ngIf="!flat">
     <ion-row justify-content-center>
       <ion-col>
+        <ion-icon
+          *ngIf="posting.pictures"
+          class="images-icon"
+          name="images">
+          {{ posting.pictures.length }}
+        </ion-icon>
         <ion-card
           item-left>
-          <ion-card-header>
-            {{ posting.title }}
-          </ion-card-header>
           <img
             *ngIf="posting.pictures"
             (click)="gotToSlides()"
             [src]="posting.pictures[0].url">
+
+          <ion-card-header class="wrap">
+            {{ posting.title }}
+          </ion-card-header>
 
           <ion-card-content>
             <ion-item>
@@ -81,6 +95,8 @@
           item-right
           [zipCode]="posting.location">>
         </h-map-card>
+        <h-contact-card>
+        </h-contact-card>
       </ion-col>
     </ion-row>
   </ion-grid>

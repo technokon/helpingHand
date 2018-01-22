@@ -4,4 +4,13 @@ page-ad-images {
       width: 100%;
     }
   }
+
+  @media screen and (min-device-width: 1200px) and (max-device-width: 1600px) {
+    ion-card {
+      &.slider-card {
+        width: calc(100% - 20%);
+      }
+    }
+  }
+
 }

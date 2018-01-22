@@ -2,6 +2,10 @@ page-detail {
 
   ion-card-header {
     @extend %h-card-header;
+
+    &.wrap {
+      @extend %h-text-wrap;
+    }
   }
 
   ion-item {
@@ -11,9 +15,20 @@ page-detail {
 
     p {
       &.wrap-text {
-        overflow-wrap: break-word;
-        white-space: normal;
+        @extend %h-text-wrap
       }
+    }
+  }
+
+  .images-icon {
+    @include make-h-icon($font-size: 7rem);
+    position: absolute;
+    opacity: 0.7;
+    top: 10rem;
+    right: -1.5rem;
+
+    @media screen and (min-width: 375px) and (max-width: 800px) {
+      @include make-h-icon($font-size: 4rem);
     }
   }
 

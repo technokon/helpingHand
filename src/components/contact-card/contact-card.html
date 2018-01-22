@@ -1,0 +1,39 @@
+<ion-card>
+  <ion-card-header>
+    Contact Poster
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="contact.name"
+          placeholder="Your Name..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="contact.email"
+          placeholder="Your Email..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          [(ngModel)]="contact.phone"
+          placeholder="Your Phone number(optional)..."></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-textarea
+          rows="5"
+          [(ngModel)]="contact.message"
+          placeholder="Message to poster..."></ion-textarea>
+      </ion-item>
+      <ion-item class="align-center">
+        <button
+          ion-button
+          color="orange"
+          large
+          (click)="actionMessage()">
+          Send Email
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

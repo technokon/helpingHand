@@ -1,6 +1,17 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Images</ion-title>
+    <ion-buttons end>
+      <button
+        (click)="goBack()"
+        ion-button
+        icon-only>
+        <ion-icon
+          class="header-icon"
+          name="close">
+        </ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -13,16 +24,16 @@
           <ion-slide
             (ionSlideDidChange)="slideChanged()"
             *ngFor="let pic of images">
-            <ion-card>
-              <img
-                class="slider-image"
-                [src]="pic.url">
-            </ion-card>
+            <ion-row justify-content-center>
+              <ion-card class="slider-card">
+                <img
+                  class="slider-image"
+                  [src]="pic.url">
+              </ion-card>
+            </ion-row>
           </ion-slide>
         </ion-slides>
       </ion-col>
     </ion-row>
-
   </ion-grid>
-
 </ion-content>

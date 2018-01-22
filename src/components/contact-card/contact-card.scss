@@ -1,0 +1,12 @@
+h-contact-card {
+
+  ion-card-header {
+    @extend %h-card-header;
+  }
+
+  ion-item {
+    &.align-center {
+      text-align: center;
+    }
+  }
+}

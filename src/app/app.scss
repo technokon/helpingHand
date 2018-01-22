@@ -26,3 +26,8 @@
   color: $color;
   font-size: $font-size;
 }
+
+%h-text-wrap {
+  overflow-wrap: break-word;
+  white-space: normal;
+}

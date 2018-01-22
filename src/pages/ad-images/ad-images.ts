@@ -33,4 +33,16 @@ export class AdImagesPage {
     console.log('Current index is', currentIndex);
   }
 
+  goBack() {
+    this.navCtrl.pop();
+  }
+
+  nextImage() {
+    this.slides.slideNext();
+  }
+
+  previousImage() {
+    this.slides.slidePrev();
+  }
+
 }
