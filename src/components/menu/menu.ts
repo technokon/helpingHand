@@ -4,12 +4,6 @@ import {MenuController} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {CategoryServiceProvider} from '../../providers/category-service/category-service';
 
-/**
- * Generated class for the MenuComponent component.
- *
- * See https://angular.io/api/core/Component for more info on Angular
- * Components.
- */
 @Component({
   selector: 'h-menu',
   templateUrl: 'menu.html'
@@ -78,8 +72,8 @@ export class MenuComponent {
 
   fetchAds() {
     this.menuCtrl.close();
-    this.searchService.getShowSearchObserver().next(true);
-    this.searchService.getCategorySearchObserver().next(this.selectedCategory);
+    this.searchService.getShowSearch().next(true);
+    this.searchService.getCategorySearch().next(this.selectedCategory);
   }
 
   actionBreadcrumb(breadcrumb) {

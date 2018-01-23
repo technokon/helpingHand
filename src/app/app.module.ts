@@ -19,6 +19,7 @@ import { SearchServiceProvider } from '../providers/search-service/search-servic
 import { CategoryServiceProvider } from '../providers/category-service/category-service';
 import { UploadServiceProvider } from '../providers/upload-service/upload-service';
 import {AdImagesPage} from '../pages/ad-images/ad-images';
+import { MapServiceProvider } from '../providers/map-service/map-service';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -27,7 +28,7 @@ const firebaseConfig = {
   projectId: "helping-hand-1b53a",
   storageBucket: "helping-hand-1b53a.appspot.com",
   messagingSenderId: "689673982246",
-  googleMapsApiKey: "AIzaSyA1tnC3od78dBFlQep6A6BKAOk-JrDvNyc",
+  googleMapsApiKey: "AIzaSyDKkJZ70jQKZdd1ZqdxDbwPovN7fmgheto",
 }
 
 @NgModule({
@@ -63,6 +64,7 @@ const firebaseConfig = {
     SearchServiceProvider,
     CategoryServiceProvider,
     UploadServiceProvider,
+    MapServiceProvider,
   ]
 })
 export class AppModule {}

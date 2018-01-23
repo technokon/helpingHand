@@ -1,56 +1,26 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs/Subject';
 
-/*
-  Generated class for the SearchServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class SearchServiceProvider {
 
-  private categorySearchObserver;
-  private categorySearchObservable;
-  private showSearchObserver;
-  private showSearchObservable;
+  private categorySearchSubject = new Subject<any>();
+  private showSearchSubject = new Subject<any>();
 
   constructor(public http: HttpClient) {
     this.init();
   }
 
   init() {
-    this.createCategorySearchObservable();
-    this.createshowSearchObservable();
-  }
-
-  private createCategorySearchObservable() {
-    this.categorySearchObservable = Observable.create(observer => {
-      this.categorySearchObserver = observer;
-    });
-  }
-
-  private createshowSearchObservable() {
-    this.showSearchObservable = Observable.create(observer => {
-      this.showSearchObserver = observer;
-    });
-  }
-
-  getCategorySearchObserver() {
-    return this.categorySearchObserver;
   }
 
   getCategorySearch() {
-    return this.categorySearchObservable;
+    return this.categorySearchSubject;
   }
 
   getShowSearch() {
-    return this.showSearchObservable;
-  }
-
-  getShowSearchObserver() {
-    return this.showSearchObserver;
+    return this.showSearchSubject;
   }
 
 }

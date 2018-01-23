@@ -1,12 +1,10 @@
 <ion-card>
-  <ion-card-header>
-    Location
-  </ion-card-header>
   <ion-card-content>
+    <div class="gmap" #map id="map"></div>
     <ion-list>
       <ion-item>
         <p class="align-center">
-          {{ zipCode }}
+          {{ address.formatted_address }}
         </p>
       </ion-item>
     </ion-list>
