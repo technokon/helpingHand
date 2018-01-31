@@ -4,6 +4,7 @@ import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firesto
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import {UploadServiceProvider} from '../upload-service/upload-service';
+import {SearchServiceProvider} from '../search-service/search-service';
 
 @Injectable()
 export class FirebaseServiceProvider {
@@ -15,14 +16,15 @@ export class FirebaseServiceProvider {
 
   constructor(public http: HttpClient,
               private angularFireStore: AngularFirestore,
-              private uploadService: UploadServiceProvider,) {
+              private uploadService: UploadServiceProvider,
+              private searchService: SearchServiceProvider,) {
     this.init();
   }
 
   init() {
     this.postingsCollection = this.angularFireStore.collection('postings',
       ref => ref.orderBy('title'));
-    this.postings = this.postingsCollection.valueChanges();
+    this.postings = this.postingsCollection.snapshotChanges();
 
     this.categoryCollection = this.angularFireStore.collection('categories',
       ref => ref.where('parents', '==', null));
@@ -34,8 +36,15 @@ export class FirebaseServiceProvider {
     let futurePostingId = collection.ref.doc().id;
     let imagePromise = this.uploadService.simpleUpload(files, futurePostingId)
       .then(snapshots => {
-        posting.pictures.push(...snapshots);
+        if (snapshots && snapshots.length) {
+          posting.pictures.push(...snapshots);
+        }
         return collection.add(posting);
+      })
+      .then(result => {
+        posting.objectID = result.id;
+        this.searchService.getIndexAddSubject().next(posting);
+        return posting;
       });
 
     return Observable
@@ -43,7 +52,7 @@ export class FirebaseServiceProvider {
   }
 
   getPostings() {
-    return this.postings;
+    return this.postings.map(this.mapSnapshot);
   }
 
   getPostingByCategory(category) {

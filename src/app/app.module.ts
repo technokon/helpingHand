@@ -20,6 +20,7 @@ import { CategoryServiceProvider } from '../providers/category-service/category-
 import { UploadServiceProvider } from '../providers/upload-service/upload-service';
 import {AdImagesPage} from '../pages/ad-images/ad-images';
 import { MapServiceProvider } from '../providers/map-service/map-service';
+import {CategoryPickPage} from '../pages/category-pick/category-pick';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -37,6 +38,7 @@ const firebaseConfig = {
     HomePage,
     DetailPage,
     AdImagesPage,
+    CategoryPickPage,
   ],
   imports: [
     BrowserModule,
@@ -52,6 +54,7 @@ const firebaseConfig = {
     HomePage,
     DetailPage,
     AdImagesPage,
+    CategoryPickPage,
   ],
   providers: [
     StatusBar,

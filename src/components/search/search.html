@@ -2,12 +2,23 @@
   <ion-item>
     <ion-input
       [(ngModel)]="search"
+      (keyup)="updateList($event)"
+      clearInput
       placeholder="Search..."></ion-input>
   </ion-item>
   <ion-item>
     <ion-input
       [(ngModel)]="category"
+      class="clear-on-hover"
+      (click)="showCategorySelectionModal()"
       placeholder="Category..."></ion-input>
+    <button
+      *ngIf="category"
+      (click)="clearSelectedCategory()"
+      class="clear-button"
+      ion-button
+      clear
+      item-right>X</button>
   </ion-item>
   <ion-item>
     <ion-input
@@ -30,6 +41,7 @@
         <ion-item>
           <ion-input
             [(ngModel)]="search"
+            (keyup)="updateList($event)"
             clearInput
             placeholder="Search..."></ion-input>
         </ion-item>
@@ -37,9 +49,17 @@
       <ion-col col-2>
         <ion-item>
           <ion-input
-            clearInput
             [(ngModel)]="category"
+            class="clear-on-hover"
+            (click)="showCategorySelectionModal()"
             placeholder="Category..."></ion-input>
+          <button
+            *ngIf="category"
+            (click)="clearSelectedCategory()"
+            class="clear-button"
+            ion-button
+            clear
+            item-right>X</button>
         </ion-item>
       </ion-col>
       <ion-col col-2>
@@ -65,26 +85,26 @@
   <ion-row [attr.justify-content-center]="platform.isLandscape() ? true : null">
     <ion-col [attr.col-8]="platform.isLandscape() ? true : null">
       <ion-card
-        *ngFor="let posting of postings | async"
+        *ngFor="let posting of postings | async; trackBy: trackByFn"
         (click)="pushPage(posting)">
 
         <ion-row>
           <ion-col col-2>
             <img
               class="search-image"
-              *ngIf="posting.pictures"
+              *ngIf="posting.pictures && posting.pictures.length"
               [src]="posting.pictures[0].url">
           </ion-col>
 
           <ion-col col-10>
             <ion-card-content>
-              <ion-card-title>
-                {{ posting.title }}
+              <ion-card-title
+                innerHTML="{{ posting.title | highlightSearch : search }}">
               </ion-card-title>
 
               <ion-item item-right>
-                <p>
-                  {{ posting.description }}
+                <p
+                  innerHTML="{{ posting.description | highlightSearch : search }}">
                 </p>
               </ion-item>
 

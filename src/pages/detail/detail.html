@@ -9,7 +9,7 @@
     <ion-row justify-content-center>
       <ion-col col-5>
         <ion-icon
-          *ngIf="posting.pictures"
+          *ngIf="posting.pictures && posting.pictures.length"
           class="images-icon"
           name="images">
           {{ posting.pictures.length }}
@@ -17,7 +17,7 @@
         <ion-card
           item-left>
           <img
-            *ngIf="posting.pictures"
+            *ngIf="posting.pictures && posting.pictures.length"
             (click)="gotToSlides()"
             [src]="posting.pictures[0].url">
           <ion-card-header class="wrap">
@@ -55,7 +55,7 @@
     <ion-row justify-content-center>
       <ion-col>
         <ion-icon
-          *ngIf="posting.pictures"
+          *ngIf="posting.pictures && posting.pictures.length"
           class="images-icon"
           name="images">
           {{ posting.pictures.length }}
@@ -63,7 +63,7 @@
         <ion-card
           item-left>
           <img
-            *ngIf="posting.pictures"
+            *ngIf="posting.pictures && posting.pictures.length"
             (click)="gotToSlides()"
             [src]="posting.pictures[0].url">
 

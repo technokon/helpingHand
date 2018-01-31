@@ -7,4 +7,22 @@ h-search {
       margin: auto;
     }
   }
+
+  ion-input {
+    &.clear-on-hover:hover .clear-input {
+      display: block;
+    }
+  }
+
+  ion-item {
+    button {
+      &.clear-button {
+        display:none
+      }
+    }
+
+    &:hover .clear-button {
+      display: block;
+    }
+  }
 }

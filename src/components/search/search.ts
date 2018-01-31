@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import {DetailPage} from '../../pages/detail/detail';
 import {ModalController, NavController, Platform} from 'ionic-angular';
-import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {Observable} from 'rxjs/Observable';
+import {CategoryPickPage} from '../../pages/category-pick/category-pick';
 
 /**
  * Generated class for the SearchComponent component.
@@ -13,22 +13,19 @@ import {Observable} from 'rxjs/Observable';
  */
 @Component({
   selector: 'h-search',
-  templateUrl: 'search.html'
+  templateUrl: 'search.html',
 })
 export class SearchComponent {
 
-  public showSearchResults;
   public postings: Observable<any>;
-  private allPositng: Observable<any>;
-  private criteriaPostings: Observable<any>;
   public search;
   public category;
+  public selectedCategory;
   public location;
 
   constructor(
     private navCtrl: NavController,
     public modalCtrl: ModalController,
-    public service: FirebaseServiceProvider,
     private searchService: SearchServiceProvider,
     public platform: Platform,
   ) {
@@ -37,33 +34,60 @@ export class SearchComponent {
 
   init() {
     this.subscribeToCategorySearch();
-    this.subscribeToAllSearch();
-    this.postings = this.allPositng;
+    this.postings = this.searchService.searchByQuery();
   }
 
   pushPage(posting) {
     this.navCtrl.push(DetailPage, posting);
-    //this.modalCtrl.create(DetailPage, user).present();
-  }
-
-  subscribeToAllSearch() {
-    this.allPositng = this.service.getPostings();
   }
 
   doSearch() {
-    this.postings = this.allPositng;
+    this.performSearch();
   }
 
   private subscribeToCategorySearch() {
     this.searchService.getCategorySearch().subscribe(searchCategory => {
       this.searchByCategory(searchCategory);
+      this.selectedCategory = searchCategory;
       this.category = searchCategory.name;
-      this.postings = this.criteriaPostings;
     });
   }
 
   private searchByCategory(searchCategory) {
-    this.criteriaPostings = this.service.getPostingByCategory(searchCategory);
+    this.postings = this.searchService.searchByQuery({
+      filters: `category:${searchCategory.id}`
+    });
   }
 
+  private searchByKey(key) {
+
+  }
+
+  updateList($event) {
+    this.performSearch();
+  }
+
+  showCategorySelectionModal() {
+    this.modalCtrl.create(CategoryPickPage).present();
+  }
+
+  performSearch() {
+    let query = {
+      query: this.search,
+      filters: undefined,
+    }
+
+    if (this.selectedCategory) {
+      query.filters = `category:${this.selectedCategory.id}`;
+    }
+
+    this.postings = this.searchService.searchByQuery(query);
+  }
+
+  clearSelectedCategory() {
+    this.selectedCategory = null;
+    this.category = null;
+
+    this.doSearch();
+  }
 }

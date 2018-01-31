@@ -52,6 +52,9 @@ export class UploadServiceProvider {
   }
 
   simpleUpload(images, docId) {
+    if (!images || !images.length) {
+      return Promise.resolve([]);
+    }
     let storageRef = this.angularFireStore.app.storage().ref();
 
     let uploads = [];

@@ -9,6 +9,7 @@ import { MapCardComponent } from './map-card/map-card';
 import { SearchComponent } from './search/search';
 import { MenuComponent } from './menu/menu';
 import { ContactCardComponent } from './contact-card/contact-card';
+import {PipesModule} from '../pipes/pipes.module';
 
 @NgModule({
 	declarations: [
@@ -24,6 +25,7 @@ import { ContactCardComponent } from './contact-card/contact-card';
   ],
 	imports: [
     IonicPageModule.forChild(RegistrationComponent),
+    PipesModule,
   ],
 	exports: [
     RegistrationComponent,
