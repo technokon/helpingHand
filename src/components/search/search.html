@@ -85,7 +85,7 @@
   <ion-row [attr.justify-content-center]="platform.isLandscape() ? true : null">
     <ion-col [attr.col-8]="platform.isLandscape() ? true : null">
       <ion-card
-        *ngFor="let posting of postings | async; trackBy: trackByFn"
+        *ngFor="let posting of postings | async"
         (click)="pushPage(posting)">
 
         <ion-row>
@@ -99,12 +99,12 @@
           <ion-col col-10>
             <ion-card-content>
               <ion-card-title
-                innerHTML="{{ posting.title | highlightSearch : search }}">
+                innerHTML="{{ posting._highlightResult.title.value }}">
               </ion-card-title>
 
               <ion-item item-right>
                 <p
-                  innerHTML="{{ posting.description | highlightSearch : search }}">
+                  innerHTML="{{ posting._highlightResult.description.value  }}">
                 </p>
               </ion-item>
 
