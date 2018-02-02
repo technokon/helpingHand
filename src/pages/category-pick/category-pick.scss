@@ -1,3 +1,25 @@
+@import "../../app/app";
+
 page-category-pick {
+
+  %no-margin {
+    margin: 0;
+    padding: 0;
+  }
+
+  ion-card-content {
+    &.center-text {
+      @extend %h-card-header;
+    }
+  }
+
+  .no-margin {
+    @extend %no-margin;
+  }
+
+  .category-card {
+    @extend %no-margin;
+    width: 100%;
+  }
 
 }

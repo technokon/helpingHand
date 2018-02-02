@@ -15,13 +15,15 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-grid>
+<ion-content>
+  <ion-grid no-padding justify-content-center>
     <ion-icon name="arrow-round-up" *ngIf="children" (click)="upCategories()"></ion-icon>
-    <ion-row wrap>
-      <ion-col *ngFor="let category of categories">
-        <ion-card (click)="onCategory(category)">
-          <ion-card-content>
+    <ion-row align-items-start>
+      <ion-col col-4
+        *ngFor="let category of categories">
+        <ion-card no-padding (click)="onCategory(category)">
+          <img src="/assets/imgs/{{category.name}}.svg">
+          <ion-card-content no-padding class="center-text">
             {{ category.name }}
           </ion-card-content>
         </ion-card>
