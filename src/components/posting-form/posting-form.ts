@@ -1,6 +1,9 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {UploadServiceProvider} from '../../providers/upload-service/upload-service';
+import {CategoryPickPage} from '../../pages/category-pick/category-pick';
+import {ModalController} from 'ionic-angular';
+import {SearchServiceProvider} from '../../providers/search-service/search-service';
 
 /**
  * Generated class for the PostingFormComponent component.
@@ -17,15 +20,17 @@ export class PostingFormComponent {
   public ad: any = {
     pictures: [],
   };
-  public categories = [];
-  public topCategory;
+  public category;
+  public selectedCategory;
   private files = [];
   @Output('event.postingForm.posted') adPosted: EventEmitter<any> = new EventEmitter<any>();
   @Output('event.postingForm.cancelled') adCancelled: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     private service: FirebaseServiceProvider,
-    private uploadService: UploadServiceProvider,) {
+    private uploadService: UploadServiceProvider,
+    public modalCtrl: ModalController,
+    private searchService: SearchServiceProvider,) {
     this.init();
   }
 
@@ -57,8 +62,10 @@ export class PostingFormComponent {
   }
 
   private subscribeToCategories() {
-    this.service.getAllCategories().subscribe(categories => {
-      this.categories = categories;
+    this.searchService.getCategorySearch().subscribe(searchCategory => {
+      this.selectedCategory = searchCategory;
+      this.category = searchCategory.name;
+      this.ad.category = searchCategory.id;
     })
   }
 
@@ -68,13 +75,19 @@ export class PostingFormComponent {
     });
   }
 
-  onChildCategorySelect(childCategory) {
-    //console.log(childCategory);
-  }
-
   detectFiles($event) {
     let files = $event.target.files;
     this.uploadService.getFileSelectorSubject().next(files);
+  }
+
+  clearSelectedCategory() {
+    this.selectedCategory = null;
+    this.category = null;
+    delete this.ad.category;
+  }
+
+  showCategorySelectionModal() {
+    this.modalCtrl.create(CategoryPickPage).present();
   }
 
 }

@@ -8,5 +8,16 @@ h-posting-form {
     &.align-center {
       text-align: center;
     }
+
+    button {
+      &.clear-button {
+        display:none
+      }
+    }
+
+    &:hover .clear-button {
+      display: block;
+    }
   }
+
 }

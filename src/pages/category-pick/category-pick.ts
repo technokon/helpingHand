@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {Observable} from 'rxjs/Observable';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
@@ -24,7 +24,8 @@ export class CategoryPickPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               private service: FirebaseServiceProvider,
-              private searchService: SearchServiceProvider,) {
+              private searchService: SearchServiceProvider,
+              public platform: Platform,) {
     this.init();
   }
 

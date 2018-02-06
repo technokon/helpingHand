@@ -19,7 +19,9 @@
   <ion-grid no-padding justify-content-center>
     <ion-icon name="arrow-round-up" *ngIf="children" (click)="upCategories()"></ion-icon>
     <ion-row align-items-start>
-      <ion-col col-4
+      <ion-col
+        [attr.col-4]="!platform.isLandscape() ? true : null"
+        [attr.col-3]="platform.isLandscape() ? true : null"
         *ngFor="let category of categories">
         <ion-card no-padding (click)="onCategory(category)">
           <img src="/assets/imgs/{{category.name}}.svg">

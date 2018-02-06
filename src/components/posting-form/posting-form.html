@@ -14,25 +14,17 @@
           placeholder="Your Ad Description..."></ion-textarea>
       </ion-item>
       <ion-item>
-        <ion-label>Top Category</ion-label>
-        <ion-select [(ngModel)]="topCategory">
-          <ion-option
-            [value]="topCategory"
-            *ngFor="let topCategory of categories">
-            {{ topCategory.name }}
-          </ion-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="topCategory">
-        <ion-label>Child Category</ion-label>
-        <ion-select [(ngModel)]="ad.category">
-          <ion-option
-            *ngFor="let category of topCategory.kids"
-            (ionSelect)="onChildCategorySelect(category)"
-            [value]="category.id">
-            {{ category.name }}
-          </ion-option>
-        </ion-select>
+        <ion-input
+          [(ngModel)]="category"
+          (click)="showCategorySelectionModal()"
+          placeholder="Category..."></ion-input>
+        <button
+          *ngIf="category"
+          (click)="clearSelectedCategory()"
+          class="clear-button"
+          ion-button
+          clear
+          item-right>X</button>
       </ion-item>
     </ion-list>
   </ion-card-content>
