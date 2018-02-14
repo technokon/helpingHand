@@ -67,7 +67,8 @@ export class SearchComponent {
     this.performSearch();
   }
 
-  showCategorySelectionModal() {
+  showCategorySelectionModal($event) {
+    $event.preventDefault();
     this.modalCtrl.create(CategoryPickPage).present();
   }
 
