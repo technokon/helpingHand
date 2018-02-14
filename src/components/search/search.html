@@ -7,12 +7,12 @@
       placeholder="Search..."></ion-input>
   </ion-item>
   <ion-item>
-    <ion-input
-      [(ngModel)]="category"
+    <div
       class="clear-on-hover"
-      readonly="false"
-      (click)="showCategorySelectionModal($event)"
-      placeholder="Category..."></ion-input>
+      [class.placeholder]="!category"
+      (click)="showCategorySelectionModal($event)">
+      {{ category || 'Choose category...' }}
+    </div>
     <button
       *ngIf="category"
       (click)="clearSelectedCategory()"
@@ -49,12 +49,12 @@
       </ion-col>
       <ion-col col-2>
         <ion-item>
-          <ion-input
-            [(ngModel)]="category"
-            readonly="false"
+          <div
             class="clear-on-hover"
-            (click)="showCategorySelectionModal($event)"
-            placeholder="Category..."></ion-input>
+            [class.placeholder]="!category"
+            (click)="showCategorySelectionModal($event)">
+            {{ category || 'Choose category...' }}
+          </div>
           <button
             *ngIf="category"
             (click)="clearSelectedCategory()"

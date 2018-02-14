@@ -15,6 +15,10 @@ h-posting-form {
       }
     }
 
+    .placeholder {
+      @extend %h-placeholder;
+    }
+
     &:hover .clear-button {
       display: block;
     }

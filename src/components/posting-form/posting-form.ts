@@ -86,7 +86,8 @@ export class PostingFormComponent {
     delete this.ad.category;
   }
 
-  showCategorySelectionModal() {
+  showCategorySelectionModal($event) {
+    $event.preventDefault();
     this.modalCtrl.create(CategoryPickPage).present();
   }
 

@@ -8,7 +8,11 @@ h-search {
     }
   }
 
-  ion-input {
+  .placeholder {
+    @extend %h-placeholder;
+  }
+
+  ion-input, div {
     &.clear-on-hover:hover .clear-input {
       display: block;
     }

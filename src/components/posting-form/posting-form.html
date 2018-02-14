@@ -14,10 +14,12 @@
           placeholder="Your Ad Description..."></ion-textarea>
       </ion-item>
       <ion-item>
-        <ion-input
-          [(ngModel)]="category"
-          (click)="showCategorySelectionModal()"
-          placeholder="Category..."></ion-input>
+        <div
+          class="clear-on-hover"
+          [class.placeholder]="!category"
+          (click)="showCategorySelectionModal($event)">
+          {{ category || 'Choose category...' }}
+        </div>
         <button
           *ngIf="category"
           (click)="clearSelectedCategory()"
