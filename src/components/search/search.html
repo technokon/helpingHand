@@ -10,6 +10,7 @@
     <ion-input
       [(ngModel)]="category"
       class="clear-on-hover"
+      [readonly]="true"
       (click)="showCategorySelectionModal($event)"
       placeholder="Category..."></ion-input>
     <button
@@ -50,6 +51,7 @@
         <ion-item>
           <ion-input
             [(ngModel)]="category"
+            [readonly]="true"
             class="clear-on-hover"
             (click)="showCategorySelectionModal($event)"
             placeholder="Category..."></ion-input>
