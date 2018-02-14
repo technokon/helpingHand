@@ -11,7 +11,11 @@ h-posting-form {
 
     button {
       &.clear-button {
-        display:none
+        display: none;
+
+        @media screen and (min-width: 375px) and (max-width: 800px) {
+          display: block;
+        }
       }
     }
 
