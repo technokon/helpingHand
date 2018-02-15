@@ -9,6 +9,7 @@
     <div
       class="clear-on-hover"
       [class.placeholder]="!category"
+      tappable
       (click)="showCategorySelectionModal($event)">
       {{ category || 'Choose category...' }}
     </div>
@@ -50,6 +51,7 @@
           <div
             class="clear-on-hover"
             [class.placeholder]="!category"
+            tappable
             (click)="showCategorySelectionModal($event)">
             {{ category || 'Choose category...' }}
           </div>
@@ -86,6 +88,7 @@
     <ion-col [attr.col-8]="platform.isLandscape() ? true : null">
       <ion-card
         *ngFor="let posting of postings | async"
+        tappable
         (click)="pushPage(posting)">
 
         <ion-row>

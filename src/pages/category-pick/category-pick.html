@@ -23,7 +23,7 @@
         [attr.col-4]="!platform.isLandscape() ? true : null"
         [attr.col-3]="platform.isLandscape() ? true : null"
         *ngFor="let category of categories">
-        <ion-card no-padding (click)="onCategory(category)">
+        <ion-card no-padding (click)="onCategory(category)" tappable>
           <img src="/assets/imgs/{{category.name}}.svg">
           <ion-card-content no-padding class="center-text">
             {{ category.name }}

@@ -27,6 +27,8 @@
             <ion-row justify-content-center>
               <ion-card class="slider-card">
                 <img
+                  tappable
+                  (click)="nextImage()"
                   class="slider-image"
                   [src]="pic.url">
               </ion-card>

@@ -38,7 +38,11 @@ export class AdImagesPage {
   }
 
   nextImage() {
-    this.slides.slideNext();
+    if (this.slides.isEnd()) {
+      this.slides.slideTo(0);
+    } else {
+      this.slides.slideNext();
+    }
   }
 
   previousImage() {

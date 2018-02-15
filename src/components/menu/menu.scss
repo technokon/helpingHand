@@ -4,4 +4,10 @@ h-menu {
       color: grey;
     }
   }
+
+  .menu-button {
+    &:hover {
+      background-color: rgba(158, 158, 158, 0.1);
+    }
+  }
 }

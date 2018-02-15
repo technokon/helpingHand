@@ -11,6 +11,8 @@
         <ion-icon
           *ngIf="posting.pictures && posting.pictures.length"
           class="images-icon"
+          tappable
+          (click)="gotToSlides()"
           name="images">
           {{ posting.pictures.length }}
         </ion-icon>
@@ -19,6 +21,7 @@
           <img
             *ngIf="posting.pictures && posting.pictures.length"
             (click)="gotToSlides()"
+            tappable
             [src]="posting.pictures[0].url">
           <ion-card-header class="wrap">
             {{ posting.title }} posted on {{ posting.datePosted }}
@@ -57,6 +60,8 @@
         <ion-icon
           *ngIf="posting.pictures && posting.pictures.length"
           class="images-icon"
+          tappable
+          (click)="gotToSlides()"
           name="images">
           {{ posting.pictures.length }}
         </ion-icon>
@@ -65,6 +70,7 @@
           <img
             *ngIf="posting.pictures && posting.pictures.length"
             (click)="gotToSlides()"
+            tappable
             [src]="posting.pictures[0].url">
 
           <ion-card-header class="wrap">
