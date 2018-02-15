@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams, Platform} from 'ionic-angular';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
-import {Observable} from 'rxjs/Observable';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 
 /**

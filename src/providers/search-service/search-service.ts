@@ -6,7 +6,6 @@ import {Observable} from 'rxjs/Observable';
 
 const POSTING_INDEX = 'prod_POSTING';
 const APPLICATION_ID ='XXZIWGI3I4';
-const ADMIN_KEY = 'fc47b09d7999f58771e5ba94aec2cf03';
 const API_KEY = '863bc2fa9bf73190cfaa76f3533bf5dd';
 
 @Injectable()
@@ -15,8 +14,6 @@ export class SearchServiceProvider {
   private categorySearchSubject = new Subject<any>();
   private showSearchSubject = new Subject<any>();
   private indexAddSubject = new Subject<any>();
-  private indexDeleteSubject = new Subject<any>();
-  private indexUpdateSubject = new Subject<any>();
   private postingIndex;
 
   constructor(public http: HttpClient) {

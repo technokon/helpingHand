@@ -59,10 +59,6 @@ export class SearchComponent {
     });
   }
 
-  private searchByKey(key) {
-
-  }
-
   updateList($event) {
     this.performSearch();
   }
