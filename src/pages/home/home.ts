@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
+import {SessionServiceProvider} from '../../providers/session-service/session-service';
 
 @Component({
   selector: 'page-home',
@@ -9,10 +10,13 @@ export class HomePage {
 
   public showSearch = false;
   public showPostAd;
+  private user;
 
   constructor(
-    private searchService: SearchServiceProvider) {
+    private searchService: SearchServiceProvider,
+    private sessionService: SessionServiceProvider,) {
     this.subscribeToSearch();
+    this.subscribeToAuthStateChange();
   }
 
   toggleSearch() {
@@ -21,6 +25,7 @@ export class HomePage {
   }
 
   togglePostAd() {
+    this.sessionService.getSignInCheckSubject().next(true);
     this.showPostAd = !this.showPostAd;
     this.showSearch = false;
   }
@@ -32,5 +37,13 @@ export class HomePage {
   subscribeToSearch() {
     this.searchService.getShowSearch()
       .subscribe(show => this.showSearch = show);
+  }
+
+  subscribeToAuthStateChange() {
+    this.sessionService.getAuthStateSubject().subscribe(user => {
+      if (user) {
+        this.user = user;
+      }
+    })
   }
 }

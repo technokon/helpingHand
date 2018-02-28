@@ -7,4 +7,12 @@ page-home {
     font-size: 3rem;
   }
 
+  .header-thumbnail {
+    width: 3rem;
+    img {
+      border: #fff 2px solid;
+      border-radius: 5%;
+    }
+  }
+
 }

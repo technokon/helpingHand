@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Sign in with your favourite provider</ion-title>
+    <ion-buttons end>
+      <button
+        (click)="onClose()"
+        ion-button
+        icon-only>
+        <ion-icon
+          class="header-icon"
+          name="close">
+        </ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div id="singInScreen"></div>
+  <!--<div *ngIf="sessionService.user"> You are logged in {{ JSON.stringify(sessionService.user) }}</div>-->
+</ion-content>

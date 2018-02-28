@@ -61,9 +61,9 @@ export class SearchServiceProvider {
           return;
         } else {
           for (var h in content.hits) {
-            console.log(
-              `Hit(${content.hits[h].objectID}): ${content.hits[h].toString()}`
-            );
+            // console.log(
+            //   `Hit(${content.hits[h].objectID}): ${content.hits[h].toString()}`
+            // );
           }
           observer.next(content.hits);// use observable
         }

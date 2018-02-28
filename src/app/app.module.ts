@@ -21,6 +21,7 @@ import { UploadServiceProvider } from '../providers/upload-service/upload-servic
 import {AdImagesPage} from '../pages/ad-images/ad-images';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 import {CategoryPickPage} from '../pages/category-pick/category-pick';
+import {LoginPage} from '../pages/login/login';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -39,6 +40,7 @@ const firebaseConfig = {
     DetailPage,
     AdImagesPage,
     CategoryPickPage,
+    LoginPage,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +57,7 @@ const firebaseConfig = {
     DetailPage,
     AdImagesPage,
     CategoryPickPage,
+    LoginPage,
   ],
   providers: [
     StatusBar,
