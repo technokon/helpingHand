@@ -22,6 +22,7 @@ import {AdImagesPage} from '../pages/ad-images/ad-images';
 import { MapServiceProvider } from '../providers/map-service/map-service';
 import {CategoryPickPage} from '../pages/category-pick/category-pick';
 import {LoginPage} from '../pages/login/login';
+import {AngularFireAuthModule} from 'angularfire2/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -46,6 +47,7 @@ const firebaseConfig = {
     BrowserModule,
     HttpClientModule,
     AngularFirestoreModule,
+    AngularFireAuthModule,
     AngularFireModule.initializeApp(firebaseConfig),
     IonicModule.forRoot(MyApp),
     ComponentsModule,

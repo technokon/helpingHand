@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
+import {Component} from '@angular/core';
+import {IonicPage, LoadingController, NavController, NavParams} from 'ionic-angular';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 
 /**
@@ -17,22 +16,60 @@ import {SessionServiceProvider} from '../../providers/session-service/session-se
 })
 export class LoginPage {
 
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    // public sessionService: SessionServiceProvider,
-    private fireService: FirebaseServiceProvider,
-    ) {
+  public user = {};
+  public loading = null;
+  public sessionService: SessionServiceProvider = null;
+  public error = null;
+
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private loadingCtrl: LoadingController,) {
+    this.sessionService = navParams.get('sessionService');
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
+    this.init();
   }
 
-  ionViewDidEnter() {
-    this.fireService.getFireUiSubject().next({
-      selector: '#singInScreen',
+  init() {
+  }
+
+  login() {
+    this.startLoading();
+    this.sessionService.doLogin(this.user).then(data => {
+      console.log(`got data back ... ${data}`);
+      this.loading.dismiss();
+      this.onClose();
+    }).catch(error => {
+      console.log(`error after login... ${error}`);
+      this.error = error;
+      this.loading.dismiss();
     });
+  }
+
+  register() {
+    this.startLoading();
+    this.sessionService.doRegister(this.user).then(data => {
+      console.log(`got data back ... ${data}`);
+      this.loading.dismiss();
+      this.onClose();
+    }).catch(error => {
+      console.log(`error after registration... ${error}`);
+      this.error = error;
+      this.loading.dismiss();
+    });
+  }
+
+  private clearErrors() {
+    this.error = null;
+  }
+
+  private startLoading() {
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    this.loading.present();
   }
 
   onClose() {

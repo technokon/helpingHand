@@ -4,10 +4,6 @@
     *ngIf="!adPosted"
     justify-content-center>
     <ion-col col-6>
-      <h-registration
-        item-left
-        *ngIf="!session.loggedIn">
-      </h-registration>
       <h-posting-form
         item-left
         (event.postingForm.posted)="onAdPosted($event)"

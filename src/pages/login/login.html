@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Sign in with your favourite provider</ion-title>
+    <ion-title>Sign in or register</ion-title>
     <ion-buttons end>
       <button
         (click)="onClose()"
@@ -15,7 +15,19 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-  <div id="singInScreen"></div>
-  <!--<div *ngIf="sessionService.user"> You are logged in {{ JSON.stringify(sessionService.user) }}</div>-->
+<ion-content padding>
+  <ion-item>
+    <ion-label floating>Email Address</ion-label>
+    <ion-input type="text" [(ngModel)]="user.email"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label floating>Password</ion-label>
+    <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+  </ion-item>
+
+  <button ion-button (click)="login()">Login</button>
+  <button ion-button color="light" (click)="register()">Register</button>
+
+  <p *ngIf="error" class="danger">{{ error.message }}</p>
 </ion-content>

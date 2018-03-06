@@ -19,6 +19,21 @@ export class HomePage {
     this.subscribeToAuthStateChange();
   }
 
+  private subscribeToSearch() {
+    this.searchService.getShowSearch()
+      .subscribe(show => this.showSearch = show);
+  }
+
+  private subscribeToAuthStateChange() {
+    this.sessionService.getAuthStateSubject().subscribe(user => {
+      if (user) {
+        this.user = user;
+      } else {
+        delete this.user;
+      }
+    })
+  }
+
   toggleSearch() {
     this.searchService.getShowSearch().next(!this.showSearch);
     this.showPostAd = false;
@@ -34,16 +49,8 @@ export class HomePage {
     this.showPostAd = false;
   }
 
-  subscribeToSearch() {
-    this.searchService.getShowSearch()
-      .subscribe(show => this.showSearch = show);
+  triggerSignOut() {
+    this.sessionService.getSignOutModalSubject().next(true);
   }
 
-  subscribeToAuthStateChange() {
-    this.sessionService.getAuthStateSubject().subscribe(user => {
-      if (user) {
-        this.user = user;
-      }
-    })
-  }
 }

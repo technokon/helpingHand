@@ -10,10 +10,13 @@
     </ion-title>
     <ion-buttons end>
       <button
+        (click)="triggerSignOut()"
         *ngIf="user"
         ion-button
         icon-only>
+        {{ user.email }}
         <ion-thumbnail
+          *ngIf="user.photoURL"
           class="header-thumbnail">
           <img [src]="user.photoURL">
         </ion-thumbnail>

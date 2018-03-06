@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import {ModalController} from 'ionic-angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AlertController, ModalController} from 'ionic-angular';
 import {Subject} from 'rxjs/Subject';
 import {LoginPage} from '../../pages/login/login';
-import firebase from 'firebase';
+import {AngularFireAuth} from 'angularfire2/auth';
 
 @Injectable()
 export class SessionServiceProvider {
@@ -11,32 +11,33 @@ export class SessionServiceProvider {
   public loggedIn = false;
   private singInCheckSubject = new Subject<any>();
   private authStateSubject = new Subject<any>();
+  private singOutModalSubject = new Subject<any>();
   public user;
-  constructor(
-    public http: HttpClient,
-    public modalCtrl: ModalController) {
+
+  constructor(public http: HttpClient,
+              public modalCtrl: ModalController,
+              public alertCtrl: AlertController,
+              private afAuth: AngularFireAuth) {
     console.log('Hello SessionServiceProvider Provider');
     this.init();
   }
 
   init() {
     this.subscribeToSignInCheck();
+    this.subscribeToSignOutModalSubject();
     this.listenToAuthStateChange();
-    this.subscribeToAuthStateChange();
+    this.subscribeToAuthStateSubject();
   }
 
-  private subscribeToAuthStateChange() {
+  private subscribeToAuthStateSubject() {
     this.authStateSubject.subscribe(user => {
-      if (user) {
-        console.log(`logged in user: ${JSON.stringify(user,undefined,4)}`);
-        this.loggedIn = true;
-        this.user = user;
-      }
+      this.loggedIn = !!user;
+      this.user = user;
     })
   }
 
   private listenToAuthStateChange() {
-    firebase.auth().onAuthStateChanged(user => {
+    this.afAuth.authState.subscribe(user => {
       this.authStateSubject.next(user);
     })
   }
@@ -44,13 +45,48 @@ export class SessionServiceProvider {
   private subscribeToSignInCheck() {
     this.singInCheckSubject.subscribe(data => {
       if (!this.loggedIn) {
-        this.modalCtrl.create(LoginPage).present();
+        this.modalCtrl.create(LoginPage, {sessionService: this}).present();
       }
     })
   }
 
+  private subscribeToSignOutModalSubject() {
+    this.singOutModalSubject.subscribe(data => {
+      if (this.loggedIn) {
+        this.showConfirmSignOut();
+      }
+    })
+  }
+
+  private showConfirmSignOut() {
+    let confirm = this.alertCtrl.create({
+      title: 'You are about to sing out',
+      message: 'Are you sure you want to do that?',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        },
+        {
+          text: 'Sign Out',
+          handler: () => {
+            console.log(`Signing out user ${this.user}`);
+            this.afAuth.auth.signOut();
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+
   getSignInCheckSubject() {
     return this.singInCheckSubject;
+  }
+
+  getSignOutModalSubject() {
+    return this.singOutModalSubject;
   }
 
   getAuthStateSubject() {
@@ -67,6 +103,32 @@ export class SessionServiceProvider {
 
   register() {
     this.loggedIn = true;
+  }
+
+  doLogin(user) {
+    return this.afAuth.auth.signInWithEmailAndPassword(user.email, user.password)
+      .then(result => {
+        console.log(`success signing in ...${JSON.stringify(result)}`);
+        this.loggedIn = true;
+        return result;
+      }).catch(error => {
+        console.log(`error logging in ... ${error}`);
+        throw error;
+      });
+  }
+
+  doRegister(user) {
+    return this.afAuth.auth.createUserWithEmailAndPassword(
+      user.email,
+      user.password
+    ).then(result => {
+      console.log(`success registering in ...${JSON.stringify(result)}`);
+      this.loggedIn = true;
+      return result;
+    }).catch(error => {
+      console.log(`error registering ... ${error}`);
+      throw error;
+    })
   }
 
 }
