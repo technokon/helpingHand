@@ -29,10 +29,6 @@ export class LoginPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
-    this.init();
-  }
-
-  init() {
   }
 
   login() {
@@ -40,6 +36,7 @@ export class LoginPage {
     this.sessionService.doLogin(this.user).then(data => {
       console.log(`got data back ... ${data}`);
       this.loading.dismiss();
+      this.executeOnSuccess();
       this.onClose();
     }).catch(error => {
       console.log(`error after login... ${error}`);
@@ -48,11 +45,16 @@ export class LoginPage {
     });
   }
 
+  private executeOnSuccess() {
+    this.navParams.get('action')();
+  }
+
   register() {
     this.startLoading();
     this.sessionService.doRegister(this.user).then(data => {
       console.log(`got data back ... ${data}`);
       this.loading.dismiss();
+      this.executeOnSuccess();
       this.onClose();
     }).catch(error => {
       console.log(`error after registration... ${error}`);

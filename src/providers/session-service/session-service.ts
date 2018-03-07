@@ -39,15 +39,22 @@ export class SessionServiceProvider {
   private listenToAuthStateChange() {
     this.afAuth.authState.subscribe(user => {
       this.authStateSubject.next(user);
-    })
+    });
   }
 
   private subscribeToSignInCheck() {
-    this.singInCheckSubject.subscribe(data => {
+    this.singInCheckSubject.subscribe(action => {
       if (!this.loggedIn) {
-        this.modalCtrl.create(LoginPage, {sessionService: this}).present();
+        this.modalCtrl.create(
+          LoginPage,
+          {
+            sessionService: this,
+            action,
+          }).present();
+      } else {
+        action();
       }
-    })
+    });
   }
 
   private subscribeToSignOutModalSubject() {
@@ -55,7 +62,7 @@ export class SessionServiceProvider {
       if (this.loggedIn) {
         this.showConfirmSignOut();
       }
-    })
+    });
   }
 
   private showConfirmSignOut() {

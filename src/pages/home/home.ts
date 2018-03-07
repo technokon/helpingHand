@@ -40,9 +40,10 @@ export class HomePage {
   }
 
   togglePostAd() {
-    this.sessionService.getSignInCheckSubject().next(true);
-    this.showPostAd = !this.showPostAd;
-    this.showSearch = false;
+    this.sessionService.getSignInCheckSubject().next(() => {
+      this.showPostAd = !this.showPostAd;
+      this.showSearch = false;
+    });
   }
 
   onPostingCancelled() {
