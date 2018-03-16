@@ -60,12 +60,12 @@ export class SessionServiceProvider {
   private subscribeToSignOutModalSubject() {
     this.singOutModalSubject.subscribe(data => {
       if (this.loggedIn) {
-        this.showConfirmSignOut();
+        this.showConfirmSignOut(data);
       }
     });
   }
 
-  private showConfirmSignOut() {
+  private showConfirmSignOut(data) {
     let confirm = this.alertCtrl.create({
       title: 'You are about to sing out',
       message: 'Are you sure you want to do that?',
@@ -81,6 +81,9 @@ export class SessionServiceProvider {
           handler: () => {
             console.log(`Signing out user ${this.user}`);
             this.afAuth.auth.signOut();
+            if (data) {
+              data();
+            }
           }
         }
       ]

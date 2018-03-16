@@ -46,7 +46,10 @@ export class LoginPage {
   }
 
   private executeOnSuccess() {
-    this.navParams.get('action')();
+    let fn = this.navParams.get('action');
+    if (fn) {
+      fn();
+    }
   }
 
   register() {

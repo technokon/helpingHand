@@ -54,4 +54,8 @@ export class HomePage {
     this.sessionService.getSignOutModalSubject().next(true);
   }
 
+  signIn() {
+    this.sessionService.getSignInCheckSubject().next();
+  }
+
 }

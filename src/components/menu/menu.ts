@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {MenuController} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {CategoryServiceProvider} from '../../providers/category-service/category-service';
+import {SessionServiceProvider} from '../../providers/session-service/session-service';
 
 @Component({
   selector: 'h-menu',
@@ -10,25 +11,23 @@ import {CategoryServiceProvider} from '../../providers/category-service/category
 })
 export class MenuComponent {
 
-  private categories:any;
-  private menuCategories:any;
+  private categories: any;
+  private menuCategories: any;
   private selectedCategory;
   breadcrumbs = [];
   showBreadcrumbs = false;
 
-  constructor(
-    private service: FirebaseServiceProvider,
-    private menuCtrl: MenuController,
-    private searchService: SearchServiceProvider,
-    private categoryService: CategoryServiceProvider,
-  ) {
+  constructor(private service: FirebaseServiceProvider,
+              private menuCtrl: MenuController,
+              private searchService: SearchServiceProvider,
+              private categoryService: CategoryServiceProvider,
+              public sessionService: SessionServiceProvider,) {
     this.initCategories();
     this.categorySelectReact();
   }
 
   private initCategories() {
-    this.service.getAllCategories().
-    subscribe(
+    this.service.getAllCategories().subscribe(
       categories => {
         this.categories = categories;
         this.onCategorySelect();
@@ -84,6 +83,22 @@ export class MenuComponent {
       let cat = this.categories.find(c => c.id === breadcrumb.id)
       this.populateMenuCategories(cat);
     }
+  }
+
+  signIn() {
+    this.sessionService.getSignInCheckSubject().next(() => {
+      this.menuCtrl.close();
+    });
+  }
+
+  signOut() {
+    this.sessionService.getSignOutModalSubject().next(() => {
+      this.menuCtrl.close();
+    });
+  }
+
+  viewMyPostings() {
+    // todo show all postings for curernt user uid where uid === posting.owner
   }
 
 }

@@ -22,6 +22,15 @@
         </ion-thumbnail>
       </button>
       <button
+        *ngIf="!user"
+        (click)="signIn()"
+        ion-button
+        icon-only>
+        <ion-icon
+          class="header-icon"
+          name="log-in"></ion-icon>
+      </button>
+      <button
         (click)="toggleSearch()"
         ion-button
         icon-only>

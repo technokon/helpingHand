@@ -5,10 +5,26 @@ h-menu {
     }
   }
 
+  .header-icon {
+    color: $h-orange;
+    font-size: 3rem;
+  }
+
   .menu-button {
     &:hover {
       @media screen and (min-device-width: 1200px) {
         background-color: rgba(158, 158, 158, 0.1);
+      }
+    }
+  }
+
+  .menu-button-icon {
+    @extend .menu-button;
+    ion-label {
+      align-items: center;
+      display: inline-flex;
+      span {
+        padding-left: 1rem;
       }
     }
   }

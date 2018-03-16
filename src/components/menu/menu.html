@@ -16,5 +16,39 @@
     ion-item>
     {{ category.name }}
   </button>
+  <ion-item-divider>User Options</ion-item-divider>
+  <button
+    class="menu-button-icon"
+    *ngIf="!sessionService.user"
+    (click)="signIn()"
+    tappable
+    ion-item>
+    <ion-icon
+      class="header-icon"
+      name="log-in"></ion-icon>
+    <span>Sign In</span>
+  </button>
+  <button
+    class="menu-button-icon"
+    *ngIf="sessionService.user"
+    (click)="signOut()"
+    tappable
+    ion-item>
+    <ion-icon
+      class="header-icon"
+      name="log-in"></ion-icon>
+    <span>Sign Out</span>
+  </button>
+  <button
+    class="menu-button-icon"
+    *ngIf="sessionService.user"
+    (click)="viewMyPostings()"
+    tappable
+    ion-item>
+    <ion-icon
+      class="header-icon"
+      name="paper"></ion-icon>
+    <span>My Postings</span>
+  </button>
   <ion-item menuClose tappable>Close</ion-item>
 </ion-list>
