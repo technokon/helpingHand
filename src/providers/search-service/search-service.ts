@@ -6,14 +6,13 @@ import {Observable} from 'rxjs/Observable';
 
 const POSTING_INDEX = 'prod_POSTING';
 const APPLICATION_ID ='XXZIWGI3I4';
-const API_KEY = '863bc2fa9bf73190cfaa76f3533bf5dd';
+const ALGOLIA_SEARCH_ONLY_KEY = 'd02fccd1421064f79fb5110cc82f656e';
 
 @Injectable()
 export class SearchServiceProvider {
 
   private categorySearchSubject = new Subject<any>();
   private showSearchSubject = new Subject<any>();
-  private indexAddSubject = new Subject<any>();
   private postingIndex;
 
   constructor(public http: HttpClient) {
@@ -25,15 +24,9 @@ export class SearchServiceProvider {
   }
 
   initializeAlgolia() {
-    let client = algoliasearch(APPLICATION_ID, API_KEY, {protocol: 'https:'});
+    let client = algoliasearch(APPLICATION_ID, ALGOLIA_SEARCH_ONLY_KEY, {protocol: 'https:'});
     this.postingIndex = client.initIndex(POSTING_INDEX);
     console.log(this.postingIndex);
-
-    this.indexAddSubject.subscribe(posting => {
-      this.postingIndex.addObject(posting, (error, content) => {
-        console.log(`indexing ${content.objectID}`)
-      })
-    })
   }
 
   getCategorySearch() {
@@ -42,10 +35,6 @@ export class SearchServiceProvider {
 
   getShowSearch() {
     return this.showSearchSubject;
-  }
-
-  getIndexAddSubject() {
-    return this.indexAddSubject;
   }
 
   getSearchIndex() {

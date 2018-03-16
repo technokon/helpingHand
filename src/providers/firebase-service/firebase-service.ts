@@ -47,7 +47,6 @@ export class FirebaseServiceProvider {
       })
       .then(result => {
         posting.objectID = result.id;
-        this.searchService.getIndexAddSubject().next(posting);
         return posting;
       });
 

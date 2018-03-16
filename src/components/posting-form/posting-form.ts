@@ -4,6 +4,7 @@ import {UploadServiceProvider} from '../../providers/upload-service/upload-servi
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
 import {ModalController} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
+import {SessionServiceProvider} from '../../providers/session-service/session-service';
 
 /**
  * Generated class for the PostingFormComponent component.
@@ -30,7 +31,8 @@ export class PostingFormComponent {
     private service: FirebaseServiceProvider,
     private uploadService: UploadServiceProvider,
     public modalCtrl: ModalController,
-    private searchService: SearchServiceProvider,) {
+    private searchService: SearchServiceProvider,
+    private sessionService: SessionServiceProvider,) {
     this.init();
   }
 
@@ -44,6 +46,7 @@ export class PostingFormComponent {
   }
 
   postAd() {
+    this.ad.owner = this.sessionService.user.uid;
     this.ad.datePosted = new Date();
     this.service.addPosting(this.ad, this.files);
 

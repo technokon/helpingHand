@@ -1,6 +1,16 @@
 const functions = require('firebase-functions');
+const algoliasearch = require('algoliasearch');
 const cors = require('cors');
 const express = require('express');
+
+// to store these in a config variable please refer to:
+// https://firebase.google.com/docs/functions/config-env
+const ALGOLIA_ID = 'XXZIWGI3I4';//functions.config().algolia.app_id;
+const ALGOLIA_ADMIN_KEY = 'fc47b09d7999f58771e5ba94aec2cf03';//functions.config().algolia.api_key;
+const ALGOLIA_SEARCH_KEY = '863bc2fa9bf73190cfaa76f3533bf5dd';//functions.config().algolia.search_key;
+const ALGOLIA_INDEX_NAME = 'prod_POSTING';
+
+const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
 // const app = express();
 
 // Automatically allow cross-origin requests
@@ -34,11 +44,17 @@ exports.onNoteCreated = functions.firestore.document('postings/{postingId}').onC
   console.log(`posting was just created... with id ${event.params.postingId} ${JSON.stringify(posting, undefined, 4)}`);
 
   // Add an 'objectID' field which Algolia requires
-  //posting.objectID = event.params.noteId;
+  posting.objectID = event.params.postingId;
 
   // Write to the algolia index
-  // const index = client.initIndex(ALGOLIA_INDEX_NAME);
-  // return index.saveObject(note);
+  const index = client.initIndex(ALGOLIA_INDEX_NAME);
+  console.log(index);
+  return index.addObject(posting, (error, content) => {
+    if (error) {
+      console.log(error);
+    }
+    console.log(`indexing ${content.objectID}`)
+  });
 });
 
 //exports.helpingHandFunction = functions.https.onRequest(app);
