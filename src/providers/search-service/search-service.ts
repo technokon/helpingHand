@@ -12,6 +12,7 @@ const ALGOLIA_SEARCH_ONLY_KEY = 'd02fccd1421064f79fb5110cc82f656e';
 export class SearchServiceProvider {
 
   private categorySearchSubject = new Subject<any>();
+  private uidSearchSubject = new Subject<any>();
   private showSearchSubject = new Subject<any>();
   private postingIndex;
 
@@ -31,6 +32,10 @@ export class SearchServiceProvider {
 
   getCategorySearch() {
     return this.categorySearchSubject;
+  }
+
+  getUidSearch() {
+    return this.uidSearchSubject;
   }
 
   getShowSearch() {

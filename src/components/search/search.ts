@@ -34,6 +34,7 @@ export class SearchComponent {
 
   init() {
     this.subscribeToCategorySearch();
+    this.subscribeToUidSearch();
     this.postings = this.searchService.searchByQuery();
   }
 
@@ -53,9 +54,21 @@ export class SearchComponent {
     });
   }
 
+  private subscribeToUidSearch() {
+    this.searchService.getUidSearch().subscribe(uid => {
+      this.searchByUid(uid);
+    });
+  }
+
   private searchByCategory(searchCategory) {
     this.postings = this.searchService.searchByQuery({
       filters: `category:${searchCategory.id}`
+    });
+  }
+
+  private searchByUid(uid) {
+    this.postings = this.searchService.searchByQuery({
+      filters: `owner:${uid}`
     });
   }
 

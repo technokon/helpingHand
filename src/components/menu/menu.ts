@@ -98,7 +98,10 @@ export class MenuComponent {
   }
 
   viewMyPostings() {
-    // todo show all postings for curernt user uid where uid === posting.owner
+    if (this.sessionService.user) {
+      this.searchService.getShowSearch().next(true);
+      this.searchService.getUidSearch().next(this.sessionService.user.uid);
+      this.menuCtrl.close();
+    }
   }
-
 }
