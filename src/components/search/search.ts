@@ -100,4 +100,14 @@ export class SearchComponent {
 
     this.doSearch();
   }
+
+  modifyAd() {
+
+  }
+
+  deleteAd() {
+
+  }
+
+
 }
