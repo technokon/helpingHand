@@ -47,6 +47,13 @@ exports.onPostingCreated = functions.firestore.document('postings/{postingId}').
   // Add an 'objectID' field which Algolia requires
   posting.objectID = context.params.postingId;
 
+  const storage = new Storage();
+  const postingBucket = storage.bucket(`uploads/${posting.objectID}`);
+  postingBucket.getFiles().then(files => {
+    console.log(`files in the bucket: ${files}`);
+    return files;
+  });
+
   // Write to the algolia index
   const index = client.initIndex(ALGOLIA_INDEX_NAME);
   console.log(index);
@@ -57,11 +64,6 @@ exports.onPostingCreated = functions.firestore.document('postings/{postingId}').
     console.log(`indexing ${content.objectID}`)
   });
 
-  const storage = new Storage();
-  const postingBucket = storage.bucket(`uploads/${posting.objectID}`);
-  postingBucket.getFiles().then(files => {
-    console.log(`files in the bucket: ${files}`);
-  });
 });
 
 exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').onDelete((snap, context) => {
@@ -76,7 +78,7 @@ exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').
   const index = client.initIndex(ALGOLIA_INDEX_NAME);
 
   console.log(index);
-  return index.deleteObject(posting.objectID, (error, content) => {
+  index.deleteObject(posting.objectID, (error, content) => {
     if (error) {
       console.log(error);
     }
@@ -86,8 +88,9 @@ exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').
   // todo now we need to delete images associated with the posing
   const storage = new Storage();
   const postingBucket = storage.bucket(`uploads/${posting.objectID}`);
-  postingBucket.getFiles().then(files => {
+  return postingBucket.getFiles().then(files => {
     console.log(`files in the bucket: ${files}`);
+    return files;
   });
 });
 
