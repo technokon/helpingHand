@@ -23,6 +23,7 @@ import { MapServiceProvider } from '../providers/map-service/map-service';
 import {CategoryPickPage} from '../pages/category-pick/category-pick';
 import {LoginPage} from '../pages/login/login';
 import {AngularFireAuthModule} from 'angularfire2/auth';
+import {EditPostingPage} from '../pages/edit-posting/edit-posting';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -39,6 +40,7 @@ const firebaseConfig = {
     MyApp,
     HomePage,
     DetailPage,
+    EditPostingPage,
     AdImagesPage,
     CategoryPickPage,
     LoginPage,
@@ -57,6 +59,7 @@ const firebaseConfig = {
     MyApp,
     HomePage,
     DetailPage,
+    EditPostingPage,
     AdImagesPage,
     CategoryPickPage,
     LoginPage,

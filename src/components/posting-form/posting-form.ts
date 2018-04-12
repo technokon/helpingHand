@@ -5,6 +5,7 @@ import {CategoryPickPage} from '../../pages/category-pick/category-pick';
 import {ModalController} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
+import {AdProvider} from '../../providers/ad/ad';
 
 /**
  * Generated class for the PostingFormComponent component.
@@ -25,20 +26,23 @@ export class PostingFormComponent {
   public selectedCategory;
   private files = [];
   @Output('event.postingForm.posted') adPosted: EventEmitter<any> = new EventEmitter<any>();
+  @Output('event.postingForm.deleted') adDeleted: EventEmitter<any> = new EventEmitter<any>();
+  @Output('event.postingForm.updated') adUpdated: EventEmitter<any> = new EventEmitter<any>();
   @Output('event.postingForm.cancelled') adCancelled: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(
-    private service: FirebaseServiceProvider,
-    private uploadService: UploadServiceProvider,
-    public modalCtrl: ModalController,
-    private searchService: SearchServiceProvider,
-    private sessionService: SessionServiceProvider,) {
+  constructor(private service: FirebaseServiceProvider,
+              private uploadService: UploadServiceProvider,
+              public modalCtrl: ModalController,
+              private searchService: SearchServiceProvider,
+              private sessionService: SessionServiceProvider,
+              private adService: AdProvider,) {
     this.init();
   }
 
   init() {
     this.subscribeToCategories();
     this.subscribeToFileSelections();
+    this.subscribeToEditPosting();
   }
 
   uploadPictures() {
@@ -48,13 +52,15 @@ export class PostingFormComponent {
   postAd() {
     this.ad.owner = this.sessionService.user.uid;
     this.ad.datePosted = new Date();
-    this.service.addPosting(this.ad, this.files);
-
-    this.adPosted.emit({
-      result: 'success',
-      data: {
-        link: 'a link to the posted ad',
-      },
+    this.service.addPosting(this.ad, this.files).subscribe(() => {
+      this.adPosted.emit({
+        result: 'success',
+        data: {
+          link: 'a link to the posted ad',
+        },
+      });
+    }, (error) => {
+      console.log(`error creating posting: ${error}`);
     });
   }
 
@@ -78,6 +84,14 @@ export class PostingFormComponent {
     });
   }
 
+  private subscribeToEditPosting() {
+    this.adService.editPostingSubject.subscribe(posting => {
+      if (posting && posting.id) {
+        this.ad = posting;
+      }
+    })
+  }
+
   detectFiles($event) {
     let files = $event.target.files;
     this.uploadService.getFileSelectorSubject().next(files);
@@ -92,6 +106,34 @@ export class PostingFormComponent {
   showCategorySelectionModal($event) {
     $event.preventDefault();
     this.modalCtrl.create(CategoryPickPage).present();
+  }
+
+  updateAd() {
+    // do an update operation and also the index has to be updated (- trigger on node side)
+    this.ad.datePosted = new Date();
+    this.service.updatePosting(this.ad, this.files).subscribe(() => {
+        this.adUpdated.emit({
+          result: 'success',
+          data: {
+            link: 'a link to the posted ad',
+          },
+        });
+      },
+      (error) => {
+        console.log(`error updating posting: ${error}`);
+      });
+  }
+
+  deleteAd() {
+    // todo pop an are you sure dialog
+    this.service.deletePosting(this.ad).subscribe(() => {
+      this.adDeleted.emit({
+        result: 'success',
+        data: {},
+      });
+    }, (error) => {
+      console.log(`error deleting posting: ${error}`);
+    });
   }
 
 }

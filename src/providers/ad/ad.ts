@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import {Subject} from 'rxjs/Subject';
 
 /*
   Generated class for the AdProvider provider.
@@ -10,7 +11,11 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class AdProvider {
 
+  public editPostingSubject = new Subject<any>();
+
   constructor(public http: HttpClient) {
   }
+
+
 
 }

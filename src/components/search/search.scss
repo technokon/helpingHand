@@ -38,5 +38,9 @@ h-search {
     &:hover .clear-button {
       display: block;
     }
+
+    &.align-right {
+      text-align: right;
+    }
   }
 }

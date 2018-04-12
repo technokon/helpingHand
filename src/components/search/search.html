@@ -115,9 +115,10 @@
           </ion-col>
         </ion-row>
 
-        <ion-row>
-          <ion-col co>
-            <ion-item class="align-center">
+        <ion-row
+          *ngIf="sessionService.user && posting.owner === sessionService.user.uid">
+          <ion-col>
+            <ion-item class="align-right">
               <button
                 ion-button
                 color="light"
@@ -129,7 +130,7 @@
                 ion-button
                 color="orange"
                 large
-                (click)="modifyAd()">
+                (click)="modifyAd(posting)">
                 Modify
               </button>
             </ion-item>

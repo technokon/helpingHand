@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
+import {DetailPage} from '../detail/detail';
+import {NavController} from 'ionic-angular';
+import {EditPostingPage} from '../edit-posting/edit-posting';
 
 @Component({
   selector: 'page-home',
@@ -14,7 +17,12 @@ export class HomePage {
 
   constructor(
     private searchService: SearchServiceProvider,
-    private sessionService: SessionServiceProvider,) {
+    private sessionService: SessionServiceProvider,
+    private navCtrl: NavController,) {
+    this.init();
+  }
+
+  private init() {
     this.subscribeToSearch();
     this.subscribeToAuthStateChange();
   }
@@ -41,8 +49,7 @@ export class HomePage {
 
   togglePostAd() {
     this.sessionService.getSignInCheckSubject().next(() => {
-      this.showPostAd = !this.showPostAd;
-      this.showSearch = false;
+      this.navCtrl.push(EditPostingPage, null);
     });
   }
 

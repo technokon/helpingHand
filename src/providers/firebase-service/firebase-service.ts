@@ -54,6 +54,24 @@ export class FirebaseServiceProvider {
       .fromPromise(imagePromise);
   }
 
+  updatePosting(posting, files) {
+    let p:Promise<any> = Promise.reject(`error updating posting ${posting}` );
+    if (posting.id) {
+      let collection = this.angularFireStore.collection('postings');
+      p = collection.doc(posting.id).update(posting);
+    }
+    return Observable.fromPromise(p);
+  }
+
+  deletePosting(posting) {
+    let p:Promise<any> = Promise.reject(`error deleting posting ${posting}` );
+    if (posting.id) {
+      let collection = this.angularFireStore.collection('postings');
+      p = collection.doc(posting.id).delete();
+    }
+    return Observable.fromPromise(p);
+  }
+
   getPostings() {
     return this.postings.map(this.mapSnapshot);
   }

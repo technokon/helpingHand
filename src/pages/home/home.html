@@ -58,10 +58,6 @@
     [hidden]="!showSearch">
   </h-search>
 
-  <h-posting
-    (event.posting.cancelled)="onPostingCancelled($event)"
-    *ngIf="showPostAd"></h-posting>
-
   <!--<ion-infinite-scroll-->
     <!--*ngIf="showSearchResults"-->
     <!--(ionInfinite)="doInfinite($event)">-->

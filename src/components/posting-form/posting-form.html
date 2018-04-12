@@ -26,7 +26,8 @@
           class="clear-button"
           ion-button
           clear
-          item-right>X</button>
+          item-right>X
+        </button>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -37,9 +38,9 @@
   <ion-card-content>
     <ion-list>
       <!--<ion-item>-->
-        <!--<ion-input-->
-          <!--[(ngModel)]="ad.pictures"-->
-          <!--placeholder="Drag Your Pictures here or press upload button below..."></ion-input>-->
+      <!--<ion-input-->
+      <!--[(ngModel)]="ad.pictures"-->
+      <!--placeholder="Drag Your Pictures here or press upload button below..."></ion-input>-->
       <!--</ion-item>-->
       <ion-item>
         <input
@@ -70,18 +71,35 @@
     <ion-list>
       <ion-item class="align-center">
         <button
-        ion-button
-        color="light"
-        large
-        (click)="cancelAd()">
+          ion-button
+          color="light"
+          large
+          (click)="cancelAd()">
           Cancel
         </button>
         <button
-        ion-button
-        color="orange"
-        large
-        (click)="postAd()">
+          *ngIf="!ad.id"
+          ion-button
+          color="orange"
+          large
+          (click)="postAd()">
           Post Ad!
+        </button>
+        <button
+          *ngIf="ad.id"
+          ion-button
+          color="orange"
+          large
+          (click)="updateAd()">
+          Update Ad!
+        </button>
+        <button
+          *ngIf="ad.id"
+          ion-button
+          color="danger"
+          large
+          (click)="deleteAd()">
+          Delete Ad!
         </button>
       </ion-item>
     </ion-list>

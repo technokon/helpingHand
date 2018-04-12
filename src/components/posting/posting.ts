@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { SessionServiceProvider } from '../../providers/session-service/session-service';
+import {AdProvider} from '../../providers/ad/ad';
 
 /**
  * Generated class for the PostingComponent component.
@@ -17,11 +18,25 @@ export class PostingComponent {
   public guideContent = this.getGuideContent();
   public adPosted  = false;
 
+  posting;
+
   @Output('event.posting.cancelled') postingCancelled: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     public session: SessionServiceProvider,
-    public platform: Platform,) {
+    public platform: Platform,
+    public adService: AdProvider,) {
+    this.init();
+  }
+
+  init() {
+    this.subscribeToEditPosting();
+  }
+
+  private subscribeToEditPosting() {
+    this.adService.editPostingSubject.subscribe(posting => {
+      this.posting = posting;
+    })
   }
 
   getGuideContent() {

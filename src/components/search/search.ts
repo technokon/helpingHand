@@ -4,6 +4,8 @@ import {ModalController, NavController, Platform} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {Observable} from 'rxjs/Observable';
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
+import {SessionServiceProvider} from '../../providers/session-service/session-service';
+import {EditPostingPage} from '../../pages/edit-posting/edit-posting';
 
 /**
  * Generated class for the SearchComponent component.
@@ -28,6 +30,7 @@ export class SearchComponent {
     public modalCtrl: ModalController,
     private searchService: SearchServiceProvider,
     public platform: Platform,
+    public sessionService: SessionServiceProvider,
   ) {
     this.init();
   }
@@ -101,8 +104,8 @@ export class SearchComponent {
     this.doSearch();
   }
 
-  modifyAd() {
-
+  modifyAd(posting) {
+    this.navCtrl.push(EditPostingPage, posting);
   }
 
   deleteAd() {
