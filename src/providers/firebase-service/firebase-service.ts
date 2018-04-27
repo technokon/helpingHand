@@ -65,7 +65,8 @@ export class FirebaseServiceProvider {
 
   deletePosting(posting) {
     let p:Promise<any> = Promise.reject(`error deleting posting ${posting}` );
-    if (posting.id) {
+    let id = posting.objectID || posting.id;
+    if (id) {
       let collection = this.angularFireStore.collection('postings');
       p = collection.doc(posting.id).delete();
     }
