@@ -107,7 +107,7 @@
 
               <ion-item item-right>
                 <p
-                  innerHTML="{{ posting._highlightResult.description.value  }}">
+                  innerHTML="{{ posting._highlightResult.description && posting._highlightResult.description.value  }}">
                 </p>
               </ion-item>
 
@@ -123,14 +123,14 @@
                 ion-button
                 color="light"
                 large
-                (click)="deleteAd()">
+                (click)="deleteAd(posting, $event)">
                 Delete
               </button>
               <button
                 ion-button
                 color="orange"
                 large
-                (click)="modifyAd(posting)">
+                (click)="modifyAd(posting, $event)">
                 Modify
               </button>
             </ion-item>

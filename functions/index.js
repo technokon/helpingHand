@@ -3,15 +3,19 @@ const algoliasearch = require('algoliasearch');
 const cors = require('cors');
 const express = require('express');
 const Storage = require('@google-cloud/storage');
-
 // to store these in a config variable please refer to:
 // https://firebase.google.com/docs/functions/config-env
 const ALGOLIA_ID = 'XXZIWGI3I4';//functions.config().algolia.app_id;
 const ALGOLIA_ADMIN_KEY = 'fc47b09d7999f58771e5ba94aec2cf03';//functions.config().algolia.api_key;
 const ALGOLIA_SEARCH_KEY = '863bc2fa9bf73190cfaa76f3533bf5dd';//functions.config().algolia.search_key;
 const ALGOLIA_INDEX_NAME = 'prod_POSTING';
+const DEFAULT_IMG_BUCKET = 'helping-hand-1b53a.appspot.com';
+const PROJECT_ID = 'helping-hand-1b53a';
 
 const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
+const storage = new Storage({
+  projectId: PROJECT_ID
+});
 // const app = express();
 
 // Automatically allow cross-origin requests
@@ -35,7 +39,18 @@ const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
 
 exports.helloWorld = functions.https.onRequest((request, response) => {
   console.log('Hellloooooo!');
- response.send("Hello from Firebase!");
+  storage.bucket(DEFAULT_IMG_BUCKET)
+    .getFiles({
+      prefix: 'uploads'
+    })
+    .then(files => {
+      console.log(`buckets: ${JSON.stringify(files)}`);
+      response.send(files[0]);
+      return files[0];
+    }).catch(error => {
+    console.log(`error occured: ${error}`);
+    response.send(`Error: ${error}`);
+  });
 });
 
 exports.onPostingCreated = functions.firestore.document('postings/{postingId}').onCreate((snap, context) => {
@@ -47,11 +62,12 @@ exports.onPostingCreated = functions.firestore.document('postings/{postingId}').
   // Add an 'objectID' field which Algolia requires
   posting.objectID = context.params.postingId;
 
-  const storage = new Storage();
-  const postingBucket = storage.bucket(`uploads/${posting.objectID}`);
+  const postingBucket = storage.bucket(`uploads`);
   postingBucket.getFiles().then(files => {
     console.log(`files in the bucket: ${files}`);
     return files;
+  }).catch(error => {
+    console.log(`error occured: ${error}`);
   });
 
   // Write to the algolia index
@@ -85,13 +101,16 @@ exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').
     console.log(`updating index for ${content.objectID}`)
   });
 
-  // todo now we need to delete images associated with the posing
-  const storage = new Storage();
-  const postingBucket = storage.bucket(`uploads/${posting.objectID}`);
-  return postingBucket.getFiles().then(files => {
-    console.log(`files in the bucket: ${files}`);
-    return files;
-  });
+  storage.bucket(DEFAULT_IMG_BUCKET)
+    .deleteFiles({
+      prefix: `uploads/${posting.objectID}`
+    }).then((result) => {
+      console.log(`successfully deleted files for ${posting.objectID} with result: ${result}`);
+      return result;
+    }).catch((error) => {
+      console.log(`error deleting files for ${posting.objectID}: ${error}`);
+    });
+  return posting.objectID;
 });
 
 exports.onPostingUpdated = functions.firestore.document('postings/{postingId}').onUpdate((snap, context) => {

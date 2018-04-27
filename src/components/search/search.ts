@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Observable';
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 import {EditPostingPage} from '../../pages/edit-posting/edit-posting';
+import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 
 /**
  * Generated class for the SearchComponent component.
@@ -31,6 +32,7 @@ export class SearchComponent {
     private searchService: SearchServiceProvider,
     public platform: Platform,
     public sessionService: SessionServiceProvider,
+    public firebaseService: FirebaseServiceProvider,
   ) {
     this.init();
   }
@@ -104,12 +106,14 @@ export class SearchComponent {
     this.doSearch();
   }
 
-  modifyAd(posting) {
+  modifyAd(posting, $event) {
+    $event.stopPropagation();
     this.navCtrl.push(EditPostingPage, posting);
   }
 
-  deleteAd() {
-
+  deleteAd(posting, $event) {
+    $event.stopPropagation();
+    this.firebaseService.deletePosting(posting);
   }
 
 
