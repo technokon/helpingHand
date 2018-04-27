@@ -68,7 +68,7 @@ export class FirebaseServiceProvider {
     let id = posting.objectID || posting.id;
     if (id) {
       let collection = this.angularFireStore.collection('postings');
-      p = collection.doc(posting.id).delete();
+      p = collection.doc(id).delete();
     }
     return Observable.fromPromise(p);
   }
