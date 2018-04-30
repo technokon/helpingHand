@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {DetailPage} from '../../pages/detail/detail';
-import {ModalController, NavController, Platform} from 'ionic-angular';
+import {AlertController, ModalController, NavController, Platform} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {Observable} from 'rxjs/Observable';
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
@@ -25,15 +25,15 @@ export class SearchComponent {
   public category;
   public selectedCategory;
   public location;
+  public loading;
 
-  constructor(
-    private navCtrl: NavController,
-    public modalCtrl: ModalController,
-    private searchService: SearchServiceProvider,
-    public platform: Platform,
-    public sessionService: SessionServiceProvider,
-    public firebaseService: FirebaseServiceProvider,
-  ) {
+  constructor(private navCtrl: NavController,
+              public modalCtrl: ModalController,
+              private searchService: SearchServiceProvider,
+              public platform: Platform,
+              public sessionService: SessionServiceProvider,
+              public firebaseService: FirebaseServiceProvider,
+              public alertCtrl: AlertController,) {
     this.init();
   }
 
@@ -67,13 +67,17 @@ export class SearchComponent {
 
   private searchByCategory(searchCategory) {
     this.postings = this.searchService.searchByQuery({
-      filters: `category:${searchCategory.id}`
+      query: {
+        filters: `category:${searchCategory.id}`,
+      }
     });
   }
 
   private searchByUid(uid) {
     this.postings = this.searchService.searchByQuery({
-      filters: `owner:${uid}`
+      query: {
+        filters: `owner:${uid}`
+      }
     });
   }
 
@@ -86,7 +90,7 @@ export class SearchComponent {
     this.modalCtrl.create(CategoryPickPage).present();
   }
 
-  performSearch() {
+  performSearch(clear = false) {
     let query = {
       query: this.search,
       filters: undefined,
@@ -96,7 +100,7 @@ export class SearchComponent {
       query.filters = `category:${this.selectedCategory.id}`;
     }
 
-    this.postings = this.searchService.searchByQuery(query);
+    this.postings = this.searchService.searchByQuery({query, clear: clear});
   }
 
   clearSelectedCategory() {
@@ -113,7 +117,46 @@ export class SearchComponent {
 
   deleteAd(posting, $event) {
     $event.stopPropagation();
-    this.firebaseService.deletePosting(posting);
+    // todo show confirmation modal
+    let confirm = this.alertCtrl.create({
+      title: 'You are about to remove your ad',
+      message: 'Are you sure you want to do that?',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            console.log(`Deleting posting ${{posting}}`);
+            let dismiss = () => {
+              if (this.loading) {
+                this.loading.dismiss();
+              }
+            };
+            this.firebaseService.deletePosting(posting)
+              .subscribe(
+                (data) => {
+                  this.performSearch(true);
+                },
+                (error) => {
+                  console.log(`error deleting posing: ${{posting}}`);
+                  dismiss();
+                  },
+                () => {
+                  dismiss();
+                });
+            this.loading = this.sessionService.startLoading();
+          }
+        }
+      ]
+    });
+    confirm.present();
+
+    // todo after delete, refresh results
   }
 
 

@@ -5,7 +5,7 @@ import * as algoliasearch from 'algoliasearch';
 import {Observable} from 'rxjs/Observable';
 
 const POSTING_INDEX = 'prod_POSTING';
-const APPLICATION_ID ='XXZIWGI3I4';
+const APPLICATION_ID = 'XXZIWGI3I4';
 const ALGOLIA_SEARCH_ONLY_KEY = 'd02fccd1421064f79fb5110cc82f656e';
 
 @Injectable()
@@ -46,8 +46,12 @@ export class SearchServiceProvider {
     return this.postingIndex;
   }
 
-  searchByQuery(query?) {
+  searchByQuery(options:any = {query: undefined, clear: false}) {
     return Observable.create(observer => {
+      let query = options.query;
+      if (options.clear) {
+        this.getSearchIndex().clearCache();
+      }
       this.getSearchIndex().search(query, (err, content) => {
         if (err) {
           console.error(err);

@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {AlertController, ModalController} from 'ionic-angular';
+import {AlertController, LoadingController, ModalController} from 'ionic-angular';
 import {Subject} from 'rxjs/Subject';
 import {LoginPage} from '../../pages/login/login';
 import {AngularFireAuth} from 'angularfire2/auth';
@@ -17,7 +17,8 @@ export class SessionServiceProvider {
   constructor(public http: HttpClient,
               public modalCtrl: ModalController,
               public alertCtrl: AlertController,
-              private afAuth: AngularFireAuth) {
+              private afAuth: AngularFireAuth,
+              private loadingCtrl: LoadingController,) {
     console.log('Hello SessionServiceProvider Provider');
     this.init();
   }
@@ -139,6 +140,14 @@ export class SessionServiceProvider {
       console.log(`error registering ... ${error}`);
       throw error;
     })
+  }
+
+  startLoading() {
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
+    return loading;
   }
 
 }

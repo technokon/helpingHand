@@ -64,12 +64,15 @@ export class FirebaseServiceProvider {
   }
 
   deletePosting(posting) {
-    let p:Promise<any> = Promise.reject(`error deleting posting ${posting}` );
-    let id = posting.objectID || posting.id;
-    if (id) {
-      let collection = this.angularFireStore.collection('postings');
-      p = collection.doc(id).delete();
-    }
+    let p = new Promise((resolve, reject) => {
+      let id = posting.objectID || posting.id;
+      if (id) {
+        let collection = this.angularFireStore.collection('postings');
+        resolve(collection.doc(id).delete());
+      } else {
+        reject(`no id found for posting ${{posting}}`);
+      }
+    });
     return Observable.fromPromise(p);
   }
 

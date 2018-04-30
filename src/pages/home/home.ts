@@ -58,7 +58,7 @@ export class HomePage {
   }
 
   triggerSignOut() {
-    this.sessionService.getSignOutModalSubject().next(true);
+    this.sessionService.getSignOutModalSubject().next();
   }
 
   signIn() {
