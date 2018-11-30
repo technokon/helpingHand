@@ -5,9 +5,9 @@ const express = require('express');
 const Storage = require('@google-cloud/storage');
 // to store these in a config variable please refer to:
 // https://firebase.google.com/docs/functions/config-env
-const ALGOLIA_ID = 'XXZIWGI3I4';//functions.config().algolia.app_id;
-const ALGOLIA_ADMIN_KEY = 'fc47b09d7999f58771e5ba94aec2cf03';//functions.config().algolia.api_key;
-const ALGOLIA_SEARCH_KEY = '863bc2fa9bf73190cfaa76f3533bf5dd';//functions.config().algolia.search_key;
+const ALGOLIA_ID = '1IIZWINWBN';//functions.config().algolia.app_id;
+const ALGOLIA_ADMIN_KEY = 'ea018daa1482dfb7e0f21d9bd61c4df8';//functions.config().algolia.api_key;
+const ALGOLIA_SEARCH_KEY = '03fbd717c23738faacc6b24c36bbbccd';//functions.config().algolia.search_key;
 const ALGOLIA_INDEX_NAME = 'prod_POSTING';
 const DEFAULT_IMG_BUCKET = 'helping-hand-1b53a.appspot.com';
 const PROJECT_ID = 'helping-hand-1b53a';

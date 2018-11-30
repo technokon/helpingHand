@@ -5,8 +5,8 @@ import * as algoliasearch from 'algoliasearch';
 import {Observable} from 'rxjs/Observable';
 
 const POSTING_INDEX = 'prod_POSTING';
-const APPLICATION_ID = 'XXZIWGI3I4';
-const ALGOLIA_SEARCH_ONLY_KEY = 'd02fccd1421064f79fb5110cc82f656e';
+const APPLICATION_ID = '1IIZWINWBN';
+const ALGOLIA_SEARCH_ONLY_KEY = '03fbd717c23738faacc6b24c36bbbccd';
 
 @Injectable()
 export class SearchServiceProvider {
