@@ -24,7 +24,7 @@
             tappable
             [src]="posting.pictures[0].url">
           <ion-card-header class="wrap">
-            {{ posting.title }} posted on {{ posting.datePosted }}
+            {{ posting.title }} posted on {{ posting.datePosted | date:'d/M/y' }}
           </ion-card-header>
           <ion-card-content>
             <ion-item>
