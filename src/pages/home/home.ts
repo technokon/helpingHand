@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
-import {DetailPage} from '../detail/detail';
 import {NavController} from 'ionic-angular';
 import {EditPostingPage} from '../edit-posting/edit-posting';
 
