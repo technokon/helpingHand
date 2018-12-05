@@ -66,10 +66,6 @@ export class LoginPage {
     });
   }
 
-  private clearErrors() {
-    this.error = null;
-  }
-
   private startLoading() {
     this.loading = this.loadingCtrl.create({
       content: 'Please wait...'

@@ -4,7 +4,6 @@ import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firesto
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import {UploadServiceProvider} from '../upload-service/upload-service';
-import {SearchServiceProvider} from '../search-service/search-service';
 import {Subject} from 'rxjs/Subject';
 
 @Injectable()
@@ -19,8 +18,7 @@ export class FirebaseServiceProvider {
 
   constructor(public http: HttpClient,
               private angularFireStore: AngularFirestore,
-              private uploadService: UploadServiceProvider,
-              private searchService: SearchServiceProvider) {
+              private uploadService: UploadServiceProvider) {
     this.init();
   }
 

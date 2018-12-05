@@ -35,6 +35,7 @@ export class DetailPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetailPage');
+    console.log(JSON.stringify(this.posting, null, 2))
   }
 
   dismiss() {

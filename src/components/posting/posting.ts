@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { SessionServiceProvider } from '../../providers/session-service/session-service';
 import {AdProvider} from '../../providers/ad/ad';
