@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'ionic-angular';
 import {AdImagesPage} from '../ad-images/ad-images';
+import {CategoryServiceProvider} from '../../providers/category-service/category-service';
 
 /**
  * Generated class for the DetailPage page.
@@ -30,12 +31,20 @@ export class DetailPage {
     public navParams: NavParams,
     private viewCtrl: ViewController,
     private alertCtrl: AlertController,
-    public platform: Platform,) {
+    public platform: Platform,
+    private categoryService: CategoryServiceProvider,) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DetailPage');
-    console.log(JSON.stringify(this.posting, null, 2))
+    this.attachCategoryToPosting();
+  }
+
+  private attachCategoryToPosting() {
+    let category = this.categoryService.findCategory({ id: this.posting.category });
+    if (category) {
+      this.posting.category = category;
+    }
   }
 
   dismiss() {
