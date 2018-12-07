@@ -31,6 +31,7 @@ export class MenuComponent {
       categories => {
         this.categories = categories;
         this.onCategorySelect();
+        this.categoryService.getCategoriesSubject().next(categories);
       },
       error => {
         console.log(error);
