@@ -28,4 +28,11 @@ h-posting-form {
     }
   }
 
+  img {
+    &.processed-image {
+      height: 100px;
+      width: auto;
+    }
+  }
+
 }

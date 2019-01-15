@@ -2,10 +2,11 @@ import {Component, EventEmitter, Output} from '@angular/core';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {UploadServiceProvider} from '../../providers/upload-service/upload-service';
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
-import {ModalController} from 'ionic-angular';
+import {ModalController, Platform} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 import {AdProvider} from '../../providers/ad/ad';
+import {IImage, ImageCompressService} from 'ng2-image-compress';
 
 /**
  * Generated class for the PostingFormComponent component.
@@ -29,13 +30,15 @@ export class PostingFormComponent {
   @Output('event.postingForm.deleted') adDeleted: EventEmitter<any> = new EventEmitter<any>();
   @Output('event.postingForm.updated') adUpdated: EventEmitter<any> = new EventEmitter<any>();
   @Output('event.postingForm.cancelled') adCancelled: EventEmitter<any> = new EventEmitter<any>();
+  private processedImages: Array<IImage>;
 
   constructor(private service: FirebaseServiceProvider,
               private uploadService: UploadServiceProvider,
               public modalCtrl: ModalController,
               private searchService: SearchServiceProvider,
               private sessionService: SessionServiceProvider,
-              private adService: AdProvider,) {
+              private adService: AdProvider,
+              public platform: Platform,) {
     this.init();
   }
 
@@ -95,6 +98,24 @@ export class PostingFormComponent {
   detectFiles($event) {
     let files = $event.target.files;
     this.uploadService.getFileSelectorSubject().next(files);
+  }
+
+  onChange(fileInput: any) {
+    let fileList: FileList;
+
+    let images: Array<IImage> = [];
+
+    ImageCompressService.filesToCompressedImageSource(fileInput.target.files)
+      .then(observableImages => {
+        observableImages.subscribe((image) => {
+          images.push(image);
+        }, (error) => {
+          console.log("Error while converting");
+        }, () => {
+          this.processedImages = images.map(i => i.compressedImage);
+          this.uploadService.getFileSelectorSubject().next(this.processedImages);
+        });
+    });
   }
 
   clearSelectedCategory() {

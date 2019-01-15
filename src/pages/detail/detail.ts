@@ -41,9 +41,11 @@ export class DetailPage {
   }
 
   private attachCategoryToPosting() {
-    let category = this.categoryService.findCategory({ id: this.posting.category });
-    if (category) {
-      this.posting.category = category;
+    if (!this.posting.category.name) {
+      let category = this.categoryService.findCategory(this.posting.category);
+      if (category) {
+        this.posting.category = category;
+      }
     }
   }
 

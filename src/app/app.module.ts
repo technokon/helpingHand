@@ -24,6 +24,7 @@ import {CategoryPickPage} from '../pages/category-pick/category-pick';
 import {LoginPage} from '../pages/login/login';
 import {AngularFireAuthModule} from 'angularfire2/auth';
 import {EditPostingPage} from '../pages/edit-posting/edit-posting';
+import { ImageCompressService,ResizeOptions,ImageUtilityService } from 'ng2-image-compress';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -76,6 +77,8 @@ const firebaseConfig = {
     CategoryServiceProvider,
     UploadServiceProvider,
     MapServiceProvider,
+    ImageCompressService,
+    ResizeOptions,
   ]
 })
 export class AppModule {}
