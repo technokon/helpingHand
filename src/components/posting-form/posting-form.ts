@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {UploadServiceProvider} from '../../providers/upload-service/upload-service';
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
@@ -18,7 +18,7 @@ import {IImage, ImageCompressService} from 'ng2-image-compress';
   selector: 'h-posting-form',
   templateUrl: 'posting-form.html'
 })
-export class PostingFormComponent {
+export class PostingFormComponent implements OnInit {
 
   public ad: any = {
     pictures: [],
@@ -39,17 +39,12 @@ export class PostingFormComponent {
               private sessionService: SessionServiceProvider,
               private adService: AdProvider,
               public platform: Platform,) {
-    this.init();
   }
 
-  init() {
+  ngOnInit() {
     this.subscribeToCategories();
     this.subscribeToFileSelections();
     this.subscribeToEditPosting();
-  }
-
-  uploadPictures() {
-
   }
 
   postAd() {
@@ -95,14 +90,7 @@ export class PostingFormComponent {
     })
   }
 
-  detectFiles($event) {
-    let files = $event.target.files;
-    this.uploadService.getFileSelectorSubject().next(files);
-  }
-
   onChange(fileInput: any) {
-    let fileList: FileList;
-
     let images: Array<IImage> = [];
 
     ImageCompressService.filesToCompressedImageSource(fileInput.target.files)
@@ -156,5 +144,4 @@ export class PostingFormComponent {
       console.log(`error deleting posting: ${error}`);
     });
   }
-
 }
