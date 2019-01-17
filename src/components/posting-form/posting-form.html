@@ -45,11 +45,30 @@
       <ion-item>
         <input
           type="file"
-          (change)="detectFiles($event)"
+          (change)="onChange($event)"
           multiple>
       </ion-item>
     </ion-list>
   </ion-card-content>
+</ion-card>
+
+<ion-card>
+
+  <ion-grid no-padding justify-content-center>
+    <ion-row align-items-start>
+      <ion-col
+        [attr.col-4]="!platform.isLandscape() ? true : null"
+        [attr.col-3]="platform.isLandscape() ? true : null"
+        *ngFor="let item of processedImages">
+        <ion-card no-padding>
+          <img class="processed-image" [src]="item.imageDataUrl">
+          <ion-card-content no-padding class="center-text">
+            {{ item.fileName }}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-card>
 
 <ion-card>

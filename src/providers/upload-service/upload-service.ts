@@ -63,12 +63,16 @@ export class UploadServiceProvider {
 
     _.each(filesIndex, idx => {
       let image = images[idx];
-      let uploadTask = storageRef.child(`${this.basePath}/${docId}/${image.name}`).put(image)
+      let base64 = image.imageDataUrl.substring('data:image/jpeg;base64,'.length);
+      let uploadTask = storageRef.child(`${this.basePath}/${docId}/${image.fileName}`).putString(base64, 'base64')
         .then(snapshot => {
           return {
-            name: image.name,
+            name: image.fileName,
             url: snapshot.downloadURL
           }
+        }).catch(error => {
+          console.log(error);
+          throw error;
         });
       uploads.push(uploadTask);
     })

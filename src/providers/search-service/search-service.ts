@@ -58,7 +58,12 @@ export class SearchServiceProvider {
           observer.error(err);
           return;
         } else {
-          observer.next(content.hits);// use observable
+          observer
+            .next(content.hits
+              .map((p) => {
+                p.category = {id: p.category};
+                return p;
+              }));// use observable
         }
       });
     })
