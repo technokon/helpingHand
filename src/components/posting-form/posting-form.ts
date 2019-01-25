@@ -50,13 +50,14 @@ export class PostingFormComponent implements OnInit {
   postAd() {
     this.ad.owner = this.sessionService.user.uid;
     this.ad.datePosted = new Date();
-    this.service.addPosting(this.ad, this.files).subscribe(() => {
+    return this.service.addPosting(this.ad, this.files).subscribe((posting) => {
       this.adPosted.emit({
         result: 'success',
         data: {
-          link: 'a link to the posted ad',
+          link: posting,
         },
       });
+      return posting;
     }, (error) => {
       console.log(`error creating posting: ${error}`);
     });

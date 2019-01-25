@@ -1,5 +1,6 @@
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import {Observable} from 'rxjs/Observable';
 
 export class PlatformMock {
   public ready(): Promise<string> {
@@ -114,6 +115,12 @@ export class DeepLinkerMock {
 
 export class FirebaseServiceProviderMock {
 
+  addPosting(posting, files) {
+    return {
+      subscribe: (f) => Promise.resolve(f(posting))
+    };
+  }
+
 }
 
 export class UploadServiceProviderMock {
@@ -126,6 +133,9 @@ export class SearchServiceProviderMock {
 
 export class SessionServiceProviderMock {
 
+  public user = {
+    uid: '123'
+  }
 }
 
 export class AdProviderMock {

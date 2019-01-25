@@ -1,3 +1,9 @@
-posting {
+@import "../../app/app";
+
+h-posting {
+
+  ion-card-header {
+    @extend %h-card-header;
+  }
 
 }
