@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Output} from '@angular/core';
-import { Platform } from 'ionic-angular';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {NavController, Platform} from 'ionic-angular';
 import { SessionServiceProvider } from '../../providers/session-service/session-service';
 import {AdProvider} from '../../providers/ad/ad';
+import {DetailPage} from '../../pages/detail/detail';
 
 /**
  * Generated class for the PostingComponent component.
@@ -13,7 +14,7 @@ import {AdProvider} from '../../providers/ad/ad';
   selector: 'h-posting',
   templateUrl: 'posting.html'
 })
-export class PostingComponent {
+export class PostingComponent  implements OnInit {
 
   public guideContent = this.getGuideContent();
   public adPosted  = false;
@@ -25,11 +26,11 @@ export class PostingComponent {
   constructor(
     public session: SessionServiceProvider,
     public platform: Platform,
-    public adService: AdProvider,) {
-    this.init();
+    public adService: AdProvider,
+    private navCtrl: NavController,) {
   }
 
-  init() {
+  ngOnInit() {
     this.subscribeToEditPosting();
   }
 
@@ -74,6 +75,7 @@ export class PostingComponent {
   onAdPosted($event) {
     if ($event && $event.result === 'success') {
       this.adPosted = true;
+      this.posting = $event.data.link;
     }
   }
 
@@ -84,8 +86,7 @@ export class PostingComponent {
   }
 
   viewAd() {
-    // open the ad page
-
+    this.navCtrl.push(DetailPage, this.posting);
   }
 
   editAd() {

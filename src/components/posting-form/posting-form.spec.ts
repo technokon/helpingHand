@@ -62,7 +62,17 @@ describe('Posting form component', () => {
   });
 
   describe('postAd', () => {
-
+    it('should post the add and fire an event to parent with the posting', (done) => {
+      component.ad = {}
+      component.files = ['test'];
+      spyOn(component.adPosted, 'emit');
+      sinon.spy(component.service, 'addPosting');
+      component.postAd().then((posting) => {
+        expect(component.service.addPosting.calledWith(posting, component.files)).toBe(true);
+        expect(component.adPosted.emit).toHaveBeenCalled();
+        done();
+      })
+    })
   });
 
 

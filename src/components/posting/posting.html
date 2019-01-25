@@ -20,13 +20,18 @@
     </ion-col>
   </ion-row>
   <ion-row
+    justify-content-center
     *ngIf="adPosted">
-    <ion-col>
+    <ion-col col-4>
       <h-confirmation-card
         [confirmationContent]="getConfirmationContent()">
       </h-confirmation-card>
     </ion-col>
-    <ion-col>
+  </ion-row>
+  <ion-row
+    justify-content-center
+    *ngIf="adPosted">
+    <ion-col col-4>
       <ion-card>
         <ion-card-header>
           Ad Actions
@@ -69,8 +74,9 @@
     </ion-col>
   </ion-row>
   <ion-row
+    justify-content-center
     *ngIf="!adPosted">
-    <ion-col>
+    <ion-col col-4>
       <h-registration
         item-left
         *ngIf="!session.loggedIn">
@@ -84,8 +90,9 @@
     </ion-col>
   </ion-row>
   <ion-row
+    justify-content-center
     *ngIf="adPosted">
-    <ion-col>
+    <ion-col col-4>
       <h-confirmation-card
       [confirmationContent]="getConfirmationContent()">
       </h-confirmation-card>

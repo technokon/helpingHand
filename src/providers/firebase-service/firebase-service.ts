@@ -45,6 +45,7 @@ export class FirebaseServiceProvider {
       })
       .then(result => {
         posting.objectID = result.id;
+        posting.category = {id: posting.category};
         return posting;
       });
 
