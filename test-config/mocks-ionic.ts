@@ -111,3 +111,27 @@ export class NavMock {
 export class DeepLinkerMock {
 
 }
+
+export class FirebaseServiceProviderMock {
+
+}
+
+export class UploadServiceProviderMock {
+
+}
+
+export class SearchServiceProviderMock {
+
+}
+
+export class SessionServiceProviderMock {
+
+}
+
+export class AdProviderMock {
+
+}
+
+export class ModalControllerMock {
+
+}
