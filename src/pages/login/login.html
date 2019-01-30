@@ -16,7 +16,7 @@
 </ion-header>
 
 <ion-content
-  *ngIf="!emailVerification"
+  *ngIf="!emailVerificationMessage"
   padding>
   <form>
     <ion-item>
@@ -38,7 +38,7 @@
   <p *ngIf="error" class="danger">{{ error.message }}</p>
 </ion-content>
 
-<ion-content padding *ngIf="emailVerification">
+<ion-content padding *ngIf="emailVerificationMessage">
   <p class="emailVerification">{{ emailVerificationMessage }}</p>
   <div class="h-login-buttons">
     <button ion-button color="light" (click)="onClose()">Close</button>
