@@ -106,7 +106,10 @@ export class NavMock {
   public registerChildNav(nav: any): void {
     return ;
   }
+}
 
+export class NavParamsMock {
+  get(){}
 }
 
 export class DeepLinkerMock {
@@ -133,8 +136,44 @@ export class SearchServiceProviderMock {
 
 export class SessionServiceProviderMock {
 
+  public mockData = {
+    emailVerified: true,
+  }
+
+  public mockEmailVerification = true;
+
   public user = {
     uid: '123'
+  }
+
+  doLogin(user) {
+    return {
+      subscribe: (fn, error, complete) => {
+        fn(this.mockData);
+        complete();
+        return Promise.resolve();
+      }
+    }
+  }
+
+  doRegister(user) {
+    return {
+      subscribe: (fn, error, complete) => {
+        fn(this.mockEmailVerification);
+        complete();
+        return Promise.resolve();
+      }
+    }
+  }
+
+  resendEmailVerification() {
+    return {
+      subscribe: (fn, error, complete) => {
+        fn && fn();
+        complete && complete();
+        return Promise.resolve();
+      }
+    }
   }
 }
 
@@ -143,5 +182,16 @@ export class AdProviderMock {
 }
 
 export class ModalControllerMock {
+
+}
+
+export class LoadingControllerMock {
+
+  create() {
+    return {
+      present: sinon.spy(),
+      dismiss: sinon.spy(),
+    }
+  }
 
 }

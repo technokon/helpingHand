@@ -4,6 +4,7 @@ import {AlertController, LoadingController, ModalController} from 'ionic-angular
 import {Subject} from 'rxjs/Subject';
 import {LoginPage} from '../../pages/login/login';
 import {AngularFireAuth} from 'angularfire2/auth';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class SessionServiceProvider {
@@ -32,7 +33,7 @@ export class SessionServiceProvider {
 
   private subscribeToAuthStateSubject() {
     this.authStateSubject.subscribe(user => {
-      this.loggedIn = !!user;
+      this.loggedIn = !!(user && user.emailVerified);
       this.user = user;
     })
   }
@@ -116,30 +117,37 @@ export class SessionServiceProvider {
     this.loggedIn = true;
   }
 
+  resendEmailVerification() {
+    return Observable
+      .fromPromise(
+        this.user &&
+        this.user.sendEmailVerification &&
+        this.user.sendEmailVerification());
+  }
+
   doLogin(user) {
-    return this.afAuth.auth.signInWithEmailAndPassword(user.email, user.password)
+    return Observable.fromPromise(this.afAuth.auth.signInWithEmailAndPassword(user.email, user.password)
       .then(result => {
         console.log(`success signing in ...${JSON.stringify(result)}`);
-        this.loggedIn = true;
+        this.loggedIn = result && result.emailVerified;
         return result;
       }).catch(error => {
         console.log(`error logging in ... ${error}`);
         throw error;
-      });
+      }));
   }
 
   doRegister(user) {
-    return this.afAuth.auth.createUserWithEmailAndPassword(
+    return Observable.fromPromise(this.afAuth.auth.createUserWithEmailAndPassword(
       user.email,
       user.password
     ).then(result => {
       console.log(`success registering in ...${JSON.stringify(result)}`);
-      this.loggedIn = true;
-      return result;
+      return result && result.emailVerified || result.sendEmailVerification() && false;
     }).catch(error => {
       console.log(`error registering ... ${error}`);
       throw error;
-    })
+    }));
   }
 
   startLoading() {
