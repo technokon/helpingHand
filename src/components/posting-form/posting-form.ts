@@ -48,7 +48,7 @@ export class PostingFormComponent implements OnInit {
     this.subscribeToFileSelections();
     this.subscribeToEditPosting();
     this.loading = this.loadingCtrl.create({
-      content: 'Please wait...'
+      content: 'Posting Your Ad...'
     });
   }
 
