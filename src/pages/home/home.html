@@ -11,7 +11,7 @@
     <ion-buttons end>
       <button
         (click)="triggerSignOut()"
-        *ngIf="user"
+        *ngIf="user && user.emailVerified"
         ion-button
         icon-only>
         {{ user.email }}
@@ -22,7 +22,7 @@
         </ion-thumbnail>
       </button>
       <button
-        *ngIf="!user"
+        *ngIf="!(user && user.emailVerified)"
         (click)="signIn()"
         ion-button
         icon-only>

@@ -15,7 +15,9 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content
+  *ngIf="!emailVerificationMessage"
+  padding>
   <form>
     <ion-item>
       <ion-label floating>Email Address</ion-label>
@@ -34,4 +36,12 @@
   </form>
 
   <p *ngIf="error" class="danger">{{ error.message }}</p>
+</ion-content>
+
+<ion-content padding *ngIf="emailVerificationMessage">
+  <p class="emailVerification">{{ emailVerificationMessage }}</p>
+  <div class="h-login-buttons">
+    <button ion-button color="light" (click)="onClose()">Close</button>
+    <button ion-button color="orange" (click)="resendEmailVarification()">Resend Email Verification</button>
+  </div>
 </ion-content>

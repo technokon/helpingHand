@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {IonicPage, LoadingController, NavController, NavParams} from 'ionic-angular';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 
@@ -14,62 +14,79 @@ import {SessionServiceProvider} from '../../providers/session-service/session-se
   selector: 'h-page-login',
   templateUrl: 'login.html',
 })
-export class LoginPage {
+export class LoginPage implements OnInit{
 
   public user = {};
-  public loading = null;
-  public sessionService: SessionServiceProvider = null;
-  public error = null;
+  public loading;
+  public sessionService: SessionServiceProvider;
+  public error;
+  public emailVerificationMessage;
+  private action;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
-              private loadingCtrl: LoadingController,) {
-    this.sessionService = navParams.get('sessionService');
-  }
+              private loadingCtrl: LoadingController) { }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
+  ngOnInit() {
+    this.sessionService = this.navParams.get('sessionService');
+    this.action = this.navParams.get('action');
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
   }
 
   login() {
     this.startLoading();
-    this.sessionService.doLogin(this.user).then(data => {
-      console.log(`got data back ... ${data}`);
-      this.loading.dismiss();
-      this.executeOnSuccess();
-      this.onClose();
-    }).catch(error => {
+    return this.sessionService.doLogin(this.user).subscribe(data => {
+      if (!data.emailVerified) {
+        this.emailVerificationMessage = 'It seems that you have not verified your email yet. ' +
+          'Please verify your email and login';
+      } else {
+        this.executeOnSuccess();
+        this.onClose();
+      }
+    }, error => {
       console.log(`error after login... ${error}`);
       this.error = error;
-      this.loading.dismiss();
-    });
+    }, () =>
+      this.loading.dismiss());
+  }
+
+  resendEmailVarification() {
+    this.startLoading();
+    return this.sessionService.resendEmailVerification()
+      .subscribe(
+        undefined,
+        (error) => {
+          console.log(`error after resending email... ${error}`);
+          this.error = error;
+        }, () =>
+          this.loading.dismiss());
   }
 
   private executeOnSuccess() {
-    let fn = this.navParams.get('action');
-    if (fn) {
-      fn();
-    }
+    return this.action && this.action();
   }
 
   register() {
     this.startLoading();
-    this.sessionService.doRegister(this.user).then(data => {
-      console.log(`got data back ... ${data}`);
-      this.loading.dismiss();
-      this.executeOnSuccess();
-      this.onClose();
-    }).catch(error => {
+    return this.sessionService.doRegister(this.user).subscribe(data => {
+      if (!data) {
+        this.emailVerificationMessage = 'We have sent you an email verification.' +
+          ' You should receive it soon. Please verify your email and then login.';
+      } else {
+        this.executeOnSuccess();
+        this.onClose();
+      }
+      return data;
+    }, error => {
       console.log(`error after registration... ${error}`);
       this.error = error;
-      this.loading.dismiss();
-    });
+    }, () =>
+      this.loading.dismiss());
   }
 
   private startLoading() {
-    this.loading = this.loadingCtrl.create({
-      content: 'Please wait...'
-    });
     this.loading.present();
   }
 
