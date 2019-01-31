@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {UploadServiceProvider} from '../../providers/upload-service/upload-service';
 import {CategoryPickPage} from '../../pages/category-pick/category-pick';
-import {ModalController, Platform} from 'ionic-angular';
+import {LoadingController, ModalController, Platform} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 import {AdProvider} from '../../providers/ad/ad';
@@ -31,6 +31,7 @@ export class PostingFormComponent implements OnInit {
   @Output('event.postingForm.updated') adUpdated: EventEmitter<any> = new EventEmitter<any>();
   @Output('event.postingForm.cancelled') adCancelled: EventEmitter<any> = new EventEmitter<any>();
   private processedImages: Array<IImage>;
+  private loading;
 
   constructor(private service: FirebaseServiceProvider,
               private uploadService: UploadServiceProvider,
@@ -38,16 +39,21 @@ export class PostingFormComponent implements OnInit {
               private searchService: SearchServiceProvider,
               private sessionService: SessionServiceProvider,
               private adService: AdProvider,
-              public platform: Platform,) {
+              public platform: Platform,
+              private loadingCtrl: LoadingController) {
   }
 
   ngOnInit() {
     this.subscribeToCategories();
     this.subscribeToFileSelections();
     this.subscribeToEditPosting();
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
   }
 
   postAd() {
+    this.startLoading();
     this.ad.owner = this.sessionService.user.uid;
     this.ad.datePosted = new Date();
     return this.service.addPosting(this.ad, this.files).subscribe((posting) => {
@@ -60,7 +66,12 @@ export class PostingFormComponent implements OnInit {
       return posting;
     }, (error) => {
       console.log(`error creating posting: ${error}`);
-    });
+    }, () =>
+      this.loading.dismiss());
+  }
+
+  private startLoading() {
+    this.loading.present();
   }
 
   cancelAd() {
