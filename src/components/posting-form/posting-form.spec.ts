@@ -1,12 +1,13 @@
 import { async, TestBed } from '@angular/core/testing';
-import {IonicModule, ModalController, Platform} from 'ionic-angular';
+import {IonicModule, LoadingController, ModalController, Platform} from 'ionic-angular';
 
 import { PostingFormComponent } from './posting-form';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 import {
   AdProviderMock,
-  FirebaseServiceProviderMock, ModalControllerMock, PlatformMock, SearchServiceProviderMock, SessionServiceProviderMock,
+  FirebaseServiceProviderMock, LoadingControllerMock, ModalControllerMock, PlatformMock, SearchServiceProviderMock,
+  SessionServiceProviderMock,
   UploadServiceProviderMock
 } from '../../../test-config/mocks-ionic';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
@@ -34,6 +35,7 @@ describe('Posting form component', () => {
         {provide: SessionServiceProvider, useClass: SessionServiceProviderMock},
         {provide: AdProvider, useClass: AdProviderMock},
         { provide: Platform, useClass: PlatformMock },
+        {provide: LoadingController, useClass: LoadingControllerMock}
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
     })
@@ -42,6 +44,7 @@ describe('Posting form component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PostingFormComponent);
     component = fixture.componentInstance;
+    component.loading = component.loadingCtrl.create();
   });
 
   it('should be created', () => {
@@ -58,6 +61,7 @@ describe('Posting form component', () => {
       expect(component.subscribeToCategories).toHaveBeenCalled();
       expect(component.subscribeToFileSelections.called).toBe(true);
       expect(component.subscribeToEditPosting.called).toBe(true);
+      expect(component.loading).toBeDefined();
     })
   });
 
@@ -66,12 +70,23 @@ describe('Posting form component', () => {
       component.ad = {}
       component.files = ['test'];
       spyOn(component.adPosted, 'emit');
+      spyOn(component, 'startLoading');
       sinon.spy(component.service, 'addPosting');
       component.postAd().then((posting) => {
         expect(component.service.addPosting.calledWith(posting, component.files)).toBe(true);
         expect(component.adPosted.emit).toHaveBeenCalled();
+        expect(component.loading.dismiss.called).toBeTruthy();
         done();
-      })
+      });
+      expect(component.startLoading).toHaveBeenCalled();
+    })
+  });
+
+  describe('startLoading', () => {
+    it('should start loading', () => {
+      component.startLoading();
+      expect(component.loading).toBeDefined();
+      expect(component.loading.present.called).toBeTruthy();
     })
   });
 

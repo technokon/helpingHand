@@ -120,7 +120,11 @@ export class FirebaseServiceProviderMock {
 
   addPosting(posting, files) {
     return {
-      subscribe: (f) => Promise.resolve(f(posting))
+      subscribe: (f, error, complete) => {
+        const result = f(posting);
+        complete();
+        return Promise.resolve(result)
+      }
     };
   }
 
