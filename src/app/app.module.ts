@@ -25,6 +25,7 @@ import {LoginPage} from '../pages/login/login';
 import {AngularFireAuthModule} from 'angularfire2/auth';
 import {EditPostingPage} from '../pages/edit-posting/edit-posting';
 import { ImageCompressService,ResizeOptions,ImageUtilityService } from 'ng2-image-compress';
+import {ProfilePage} from '../pages/profile/profile';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5jdxgWDpTB5eXLqHh-cllKo4UjRvnXj0",
@@ -45,6 +46,7 @@ const firebaseConfig = {
     AdImagesPage,
     CategoryPickPage,
     LoginPage,
+    ProfilePage,
   ],
   imports: [
     BrowserModule,
@@ -64,6 +66,7 @@ const firebaseConfig = {
     AdImagesPage,
     CategoryPickPage,
     LoginPage,
+    ProfilePage,
   ],
   providers: [
     StatusBar,

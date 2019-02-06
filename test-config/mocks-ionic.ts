@@ -1,6 +1,7 @@
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 
 export class PlatformMock {
   public ready(): Promise<string> {
@@ -80,15 +81,11 @@ export class SplashScreenMock extends SplashScreen {
 export class NavMock {
 
   public pop(): any {
-    return new Promise(function(resolve: Function): void {
-      resolve();
-    });
+    return Promise.resolve();
   }
 
   public push(): any {
-    return new Promise(function(resolve: Function): void {
-      resolve();
-    });
+    return Promise.resolve();
   }
 
   public getActive(): any {
@@ -147,8 +144,11 @@ export class SessionServiceProviderMock {
   public mockEmailVerification = true;
 
   public user = {
-    uid: '123'
+    uid: '123',
+    password: 'test123'
   }
+
+  public error;
 
   doLogin(user) {
     return {
@@ -179,6 +179,25 @@ export class SessionServiceProviderMock {
       }
     }
   }
+
+  deleteUser() {
+    return Promise.resolve();
+  }
+
+  sendPasswordResetNotification() {
+    return Promise.resolve();
+  }
+
+  updateUserPassword(password) {
+    return !password && Promise.reject('no password ') || Promise.resolve();
+  }
+
+  updateUserEmail(email) {
+    if (!email) {
+      return Promise.reject('no email provided MOCK')
+    }
+    return Promise.resolve();
+  }
 }
 
 export class AdProviderMock {
@@ -190,12 +209,37 @@ export class ModalControllerMock {
 }
 
 export class LoadingControllerMock {
+  present = sinon.spy(() => Promise.resolve());
+  dismiss = sinon.spy(() => Promise.resolve());
 
   create() {
     return {
-      present: sinon.spy(),
-      dismiss: sinon.spy(),
+      present: this.present,
+      dismiss: this.dismiss,
     }
   }
+
+}
+
+export class AlertControllerMock {
+  present = sinon.spy(() => Promise.resolve());
+  create(alert) {
+    return {
+      present: this.present
+    }
+  }
+}
+
+export class HttpClientMock {
+
+}
+
+export class AngularFireAuthMock {
+
+  auth = {
+    sendPasswordResetEmail: sinon.spy(() => Promise.resolve())
+  }
+
+  authState = new Subject<any>();
 
 }

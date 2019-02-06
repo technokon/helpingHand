@@ -34,7 +34,7 @@ export class AdImagesPage {
   }
 
   goBack() {
-    this.navCtrl.pop();
+    return this.navCtrl.pop();
   }
 
   nextImage() {
