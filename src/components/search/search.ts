@@ -117,7 +117,6 @@ export class SearchComponent {
 
   deleteAd(posting, $event) {
     $event.stopPropagation();
-    // todo show confirmation modal
     let confirm = this.alertCtrl.create({
       title: 'You are about to remove your ad',
       message: 'Are you sure you want to do that?',
@@ -154,7 +153,7 @@ export class SearchComponent {
         }
       ]
     });
-    confirm.present();
+    return confirm.present();
 
     // todo after delete, refresh results
   }

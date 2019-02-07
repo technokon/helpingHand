@@ -1,5 +1,5 @@
 import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {AlertController, LoadingController, ModalController} from 'ionic-angular';
 import {Subject} from 'rxjs/Subject';
 import {LoginPage} from '../../pages/login/login';
@@ -7,7 +7,7 @@ import {AngularFireAuth} from 'angularfire2/auth';
 import {Observable} from 'rxjs/Observable';
 
 @Injectable()
-export class SessionServiceProvider {
+export class SessionServiceProvider{
 
   public loggedIn = false;
   private singInCheckSubject = new Subject<any>();
@@ -20,11 +20,10 @@ export class SessionServiceProvider {
               public alertCtrl: AlertController,
               private afAuth: AngularFireAuth,
               private loadingCtrl: LoadingController,) {
-    console.log('Hello SessionServiceProvider Provider');
-    this.init();
+    this.onInit();
   }
 
-  init() {
+  onInit() {
     this.subscribeToSignInCheck();
     this.subscribeToSignOutModalSubject();
     this.listenToAuthStateChange();
@@ -148,6 +147,53 @@ export class SessionServiceProvider {
       console.log(`error registering ... ${error}`);
       throw error;
     }));
+  }
+
+  deleteUser() {
+    if (!this.user) {
+      return Promise.reject('No user found... Please log in');
+    }
+    return this.user && this.user.delete();
+  }
+
+  updateUserPassword(newPassword) {
+    let error;
+    if (!newPassword) {
+      error = 'Please provide a password';
+    }
+    if (!this.user) {
+      error = 'No user found... Please log in';
+    }
+    if (error) {
+      return Promise.reject(error);
+    }
+
+    return newPassword &&
+        this.user &&
+        this.user.updatePassword(newPassword);
+  }
+
+  sendPasswordResetNotification(emailAddress) {
+    if (!emailAddress) {
+      return Promise.reject('Please provide your email address');
+    }
+    return this.afAuth.auth.sendPasswordResetEmail(emailAddress);
+  }
+
+  updateUserEmail(emailAddress) {
+    let error;
+    if (!emailAddress) {
+      error = 'Please provide an email';
+    }
+    if (!this.user) {
+      error = 'No user found... Please log in';
+    }
+    if (error) {
+      return Promise.reject(error);
+    }
+    return this.user.updateEmail(emailAddress)
+      .then(() =>
+        this.user.sendEmailVerification());
   }
 
   startLoading() {

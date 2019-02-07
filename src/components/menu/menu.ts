@@ -1,15 +1,19 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
-import {MenuController} from 'ionic-angular';
+import {MenuController, NavController} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {CategoryServiceProvider} from '../../providers/category-service/category-service';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
+import {DetailPage} from '../../pages/detail/detail';
+import {ProfilePage} from '../../pages/profile/profile';
 
 @Component({
   selector: 'h-menu',
   templateUrl: 'menu.html'
 })
 export class MenuComponent {
+
+  @Input() nav: NavController
 
   private categories: any;
   private menuCategories: any;
@@ -104,5 +108,13 @@ export class MenuComponent {
       this.searchService.getUidSearch().next(this.sessionService.user.uid);
       this.menuCtrl.close();
     }
+  }
+
+  viewMySettings() {
+    return Promise.resolve(
+      this.sessionService.user &&
+      this.nav.push(ProfilePage)
+        .then(() => this.menuCtrl.close())
+    );
   }
 }
