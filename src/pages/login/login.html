@@ -35,7 +35,14 @@
     </div>
   </form>
 
-  <p *ngIf="error" class="danger">{{ error.message }}</p>
+  <p *ngIf="error" class="danger">{{ actionMessage }}</p>
+  <button
+    *ngIf="showPasswordResetLink"
+    (click)="sendPasswordReset(user.email)"
+    class="clear-button"
+    ion-button
+    clear
+    item-right>Reset password</button>
 </ion-content>
 
 <ion-content padding *ngIf="emailVerificationMessage">
