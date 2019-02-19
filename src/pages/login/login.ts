@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {IonicPage, LoadingController, NavController, NavParams} from 'ionic-angular';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
+import {Observable} from 'rxjs/Observable';
 
 /**
  * Generated class for the LoginPage page.
@@ -16,12 +17,14 @@ import {SessionServiceProvider} from '../../providers/session-service/session-se
 })
 export class LoginPage implements OnInit{
 
-  public user = {};
+  public user:any = {};
   public loading;
   public sessionService: SessionServiceProvider;
   public error;
   public emailVerificationMessage;
+  public showPasswordResetLink = false;
   private action;
+  public actionMessage;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -30,26 +33,33 @@ export class LoginPage implements OnInit{
   ngOnInit() {
     this.sessionService = this.navParams.get('sessionService');
     this.action = this.navParams.get('action');
-    this.loading = this.loadingCtrl.create({
-      content: 'Please wait...'
-    });
   }
 
   login() {
-    this.startLoading();
-    return this.sessionService.doLogin(this.user).subscribe(data => {
-      if (!data.emailVerified) {
-        this.emailVerificationMessage = 'It seems that you have not verified your email yet. ' +
-          'Please verify your email and login';
-      } else {
-        this.executeOnSuccess();
-        this.onClose();
-      }
-    }, error => {
-      console.log(`error after login... ${error}`);
-      this.error = error;
-    }, () =>
-      this.loading.dismiss());
+    return Observable.fromPromise(this.startLoading())
+      .flatMapTo(this.sessionService.doLogin(this.user))
+      .subscribe(data => {
+        if (!data.emailVerified) {
+          this.emailVerificationMessage = 'It seems that you have not verified your email yet. ' +
+            'Please verify your email and login';
+        } else {
+          this.executeOnSuccess();
+          this.onClose();
+        }
+      }, error => {
+        console.log(`error after login... ${error}`);
+        this.error = error;
+        this.handleError(error);
+        this.loading.dismiss();
+      }, () =>
+        this.loading.dismiss());
+  }
+
+  handleError(error) {
+    if (error && error.code === 'auth/wrong-password') {
+      this.showPasswordResetLink = true;
+      this.actionMessage = error.message;
+    }
   }
 
   resendEmailVarification() {
@@ -60,6 +70,22 @@ export class LoginPage implements OnInit{
         (error) => {
           console.log(`error after resending email... ${error}`);
           this.error = error;
+        }, () =>
+          this.loading.dismiss());
+  }
+
+  sendPasswordReset(email) {
+    Observable.fromPromise(this.startLoading())
+      .flatMapTo(this.sessionService.sendPasswordResetNotification(email))
+      .subscribe(
+        () => {
+          this.actionMessage = 'You should receive an email with instruction to reset your password';
+        },
+        (error) => {
+          console.log(`error after sending email reset... ${error}`);
+          this.error = error;
+          this.handleError(error);
+          this.loading.dismiss();
         }, () =>
           this.loading.dismiss());
   }
@@ -87,7 +113,10 @@ export class LoginPage implements OnInit{
   }
 
   private startLoading() {
-    this.loading.present();
+    this.loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    return this.loading.present();
   }
 
   onClose() {

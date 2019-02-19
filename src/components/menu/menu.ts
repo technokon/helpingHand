@@ -13,7 +13,7 @@ import {ProfilePage} from '../../pages/profile/profile';
 })
 export class MenuComponent {
 
-  @Input() nav: NavController
+  @Input() nav: NavController;
 
   private categories: any;
   private menuCategories: any;

@@ -1,4 +1,4 @@
-import {async, TestBed} from '@angular/core/testing';
+import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {IonicModule, LoadingController, NavController, NavParams} from 'ionic-angular';
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -60,52 +60,93 @@ describe('Login page component', () => {
       component.ngOnInit();
       expect(component.sessionService).toEqual(sessionService);
       expect(component.action).toEqual(action);
-      expect(component.loading).toBeDefined();
     })
   });
 
   describe('login', () => {
-    it('perform login with email being verified', (done) => {
-      spyOn(component, 'startLoading');
+    it('perform login with email being verified', fakeAsync(() => {
+      sinon.spy(component, 'startLoading');
       spyOn(component, 'executeOnSuccess');
       spyOn(component, 'onClose');
 
       sinon.spy(component.sessionService, 'doLogin');
 
-      component.login().then(() => {
-        expect(component.sessionService.doLogin.called).toBeTruthy();
-        expect(component.loading.dismiss.called).toBeTruthy();
-        expect(component.executeOnSuccess).toHaveBeenCalled();
-        expect(component.emailVerificationMessage).toBeUndefined();
-        expect(component.onClose).toHaveBeenCalled();
-        done();
-      })
-      expect(component.startLoading).toHaveBeenCalled();
-    })
-    it('perform login with email NOT being verified', (done) => {
-      spyOn(component, 'startLoading');
+      component.login();
+      tick();
+      fixture.detectChanges();
+      expect(component.sessionService.doLogin.called).toBeTruthy();
+      expect(component.loading.dismiss.called).toBeTruthy();
+      expect(component.executeOnSuccess).toHaveBeenCalled();
+      expect(component.emailVerificationMessage).toBeUndefined();
+      expect(component.onClose).toHaveBeenCalled();
+      expect(component.startLoading.called).toBeTruthy();
+    }));
+    it('perform login with email NOT being verified', fakeAsync(() => {
+      sinon.spy(component, 'startLoading');
       spyOn(component, 'executeOnSuccess');
       spyOn(component, 'onClose');
 
       component.sessionService.mockData.emailVerified = false;
       sinon.spy(component.sessionService, 'doLogin');
 
-      component.login().then(() => {
-        expect(component.sessionService.doLogin.called).toBeTruthy();
-        expect(component.loading.dismiss.called).toBeTruthy();
-        expect(component.executeOnSuccess).not.toHaveBeenCalled();
-        expect(component.onClose).not.toHaveBeenCalled();
-        expect(component.emailVerificationMessage).toBeDefined();
+      component.login();
+      tick();
+      fixture.detectChanges();
+      expect(component.sessionService.doLogin.called).toBeTruthy();
+      expect(component.loading.dismiss.called).toBeTruthy();
+      expect(component.executeOnSuccess).not.toHaveBeenCalled();
+      expect(component.onClose).not.toHaveBeenCalled();
+      expect(component.emailVerificationMessage).toBeDefined();
+      expect(component.startLoading.called).toBeTruthy();
+    }));
+    it('perform login with wrong password', fakeAsync(() => {
+      sinon.spy(component, 'startLoading');
+      spyOn(component, 'executeOnSuccess');
+      spyOn(component, 'onClose');
+      sinon.spy(component, 'handleError');
 
-        done();
-      })
-      expect(component.startLoading).toHaveBeenCalled();
+      component.sessionService.mockData.emailVerified = false;
+      component.sessionService.doLogin = sinon.spy(() => Promise.reject({message: 'error', code: 'auth/wrong-password'}))
+
+      component.login();
+      tick();
+      fixture.detectChanges();
+      expect(component.sessionService.doLogin.called).toBeTruthy();
+      expect(component.loading.dismiss.called).toBeTruthy();
+      expect(component.handleError.called).toBeTruthy();
+      expect(component.executeOnSuccess).not.toHaveBeenCalled();
+      expect(component.onClose).not.toHaveBeenCalled();
+      expect(component.emailVerificationMessage).toBeUndefined();
+      expect(component.startLoading.called).toBeTruthy();
+    }));
+  });
+
+  describe('handleError', () => {
+    it('should handle wrong password error', () => {
+      component.handleError({message: 'error', code: 'auth/wrong-password'});
+      expect(component.showPasswordResetLink).toBeTruthy();
+      expect(component.actionMessage).toBeDefined();
     })
+  });
+
+  describe('sendPasswordReset', () => {
+    it('should send password reset notification', fakeAsync(() => {
+      sinon.spy(component.sessionService, 'sendPasswordResetNotification');
+      sinon.spy(component, 'startLoading');
+      component.showPasswordResetLink = true;
+      component.sendPasswordReset('test@test.test');
+      tick();
+      expect(component.sessionService.sendPasswordResetNotification.called).toBeTruthy();
+      expect(component.startLoading.called).toBeTruthy();
+      expect(component.loading.dismiss.called).toBeTruthy();
+      expect(component.showPasswordResetLink).toBeTruthy();
+      expect(component.actionMessage).toBeDefined();
+    }));
   });
 
   describe('register', () => {
     it('register with email being verified', (done) => {
-      spyOn(component, 'startLoading');
+      sinon.spy(component, 'startLoading');
       spyOn(component, 'executeOnSuccess');
       spyOn(component, 'onClose');
 
@@ -119,10 +160,10 @@ describe('Login page component', () => {
         expect(component.onClose).toHaveBeenCalled();
         done();
       })
-      expect(component.startLoading).toHaveBeenCalled();
+      expect(component.startLoading.called).toBeTruthy();
     })
     it('perform register with email NOT being verified', (done) => {
-      spyOn(component, 'startLoading');
+      sinon.spy(component, 'startLoading');
       spyOn(component, 'executeOnSuccess');
       spyOn(component, 'onClose');
 
@@ -138,13 +179,13 @@ describe('Login page component', () => {
 
         done();
       })
-      expect(component.startLoading).toHaveBeenCalled();
+      expect(component.startLoading.called).toBeTruthy();
     })
   });
 
   describe('resendEmailVarification', () => {
     it('should resend email notification', (done) => {
-      spyOn(component, 'startLoading');
+      sinon.spy(component, 'startLoading');
       sinon.spy(component.sessionService, 'resendEmailVerification');
 
       component.resendEmailVarification().then(() => {
@@ -152,7 +193,7 @@ describe('Login page component', () => {
         expect(component.loading.dismiss.called).toBeTruthy();
         done();
       })
-      expect(component.startLoading).toHaveBeenCalled();
+      expect(component.startLoading.called).toBeTruthy();
     })
   });
 

@@ -14,6 +14,10 @@
       {
         "source": "/helloWorld",
         "function": "helloWorld"
+      },
+      {
+        "source": "/testPostingSearch",
+        "function": "testPostingSearch"
       }
     ]
   },

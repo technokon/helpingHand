@@ -1,4 +1,7 @@
 const functions = require('firebase-functions');
+// The Firebase Admin SDK to access the Firebase Realtime Database.
+const admin = require('firebase-admin');
+admin.initializeApp();
 const algoliasearch = require('algoliasearch');
 const cors = require('cors');
 const express = require('express');
@@ -88,6 +91,7 @@ exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').
 
   console.log(`posting was just deleted... with id ${context.params.postingId} ${JSON.stringify(posting, undefined, 4)}`);
 
+  // TODO this function needs to be executed once the posting is deleted
   // Add an 'objectID' field which Algolia requires
   posting.objectID = context.params.postingId;
 
@@ -131,6 +135,48 @@ exports.onPostingUpdated = functions.firestore.document('postings/{postingId}').
     console.log(`updating index for ${content.objectID}`)
   });
 });
+
+exports.onUserDelete = functions.auth.user().onDelete((user) => {
+  const userId = user.uid;
+  console.log(`Deleting user ${userId}, ${user.email}`);
+  // TODO Delete user postings
+
+  // TODO Delete algolia references
+
+
+});
+
+exports.testPostingSearch = functions.https.onRequest((request, response) => {
+  const db = admin.firestore();
+  db.collection('postings').get().then((snapshot) => {
+    let objects = [];
+    snapshot.forEach((posting) => {
+      const data = posting.data();
+      console.log(data.location);
+      objects.push(data);
+    });
+    response.send(JSON.stringify(objects, null, 2));
+    return true;
+  }).catch((error) => {
+    console.log(`error... ${error}`);
+    throw error;
+  });
+  return true;
+});
+
+exports.postingsMonitor = functions.pubsub.topic('postings-monitor')
+  .onPublish((message) => {
+    console.log(message.data);
+    const db = admin.firestore();
+    db.collection('postings').get().then((snapshot) => {
+      console.log(`So far, ${snapshot.size} posting on site`);
+      return true;
+    }).catch((error) => {
+      console.log(`error... ${error}`);
+      throw error;
+    });
+    return true;
+  });
 
 //exports.helpingHandFunction = functions.https.onRequest(app);
 

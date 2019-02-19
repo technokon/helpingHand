@@ -151,13 +151,7 @@ export class SessionServiceProviderMock {
   public error;
 
   doLogin(user) {
-    return {
-      subscribe: (fn, error, complete) => {
-        fn(this.mockData);
-        complete();
-        return Promise.resolve();
-      }
-    }
+    return Promise.resolve(this.mockData);
   }
 
   doRegister(user) {
