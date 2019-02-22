@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
 admin.initializeApp();
+const db = admin.firestore();
 const algoliasearch = require('algoliasearch');
 const cors = require('cors');
 const express = require('express');
@@ -39,23 +40,6 @@ const storage = new Storage({
 // https://firebase.google.com/docs/functions/write-firebase-functions
 // https://firebase.google.com/docs/hosting/functions
 // to host locally firebase serve --only hosting,functions
-
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  console.log('Hellloooooo!');
-  storage.bucket(DEFAULT_IMG_BUCKET)
-    .getFiles({
-      prefix: 'uploads'
-    })
-    .then(files => {
-      console.log(`buckets: ${JSON.stringify(files)}`);
-      response.send(files[0]);
-      return files[0];
-    }).catch(error => {
-    console.log(`error occured: ${error}`);
-    response.send(`Error: ${error}`);
-  });
-});
-
 exports.onPostingCreated = functions.firestore.document('postings/{postingId}').onCreate((snap, context) => {
   // Get the note document
   const posting = snap.data();
@@ -65,56 +49,133 @@ exports.onPostingCreated = functions.firestore.document('postings/{postingId}').
   // Add an 'objectID' field which Algolia requires
   posting.objectID = context.params.postingId;
 
-  const postingBucket = storage.bucket(`uploads`);
+  // Write to the algolia index
+  return addPostingToAlgolia(posting)
+    .then(content =>
+      console.log(`indexing ${content.objectID}`))
+    .catch(error => console.log(error, `Error adding posting to algolia: ${posting}`))
+});
+
+function logFilesInTheBucket(bucketName) {
+  const postingBucket = storage.bucket(bucketName);
   postingBucket.getFiles().then(files => {
     console.log(`files in the bucket: ${files}`);
     return files;
   }).catch(error => {
     console.log(`error occured: ${error}`);
   });
+}
 
-  // Write to the algolia index
-  const index = client.initIndex(ALGOLIA_INDEX_NAME);
-  console.log(index);
-  return index.addObject(posting, (error, content) => {
-    if (error) {
-      console.log(error);
-    }
-    console.log(`indexing ${content.objectID}`)
-  });
+/**
+ * Add posting to algolia index.
+ * @param posting
+ */
+function addPostingToAlgolia(posting) {
+  if (posting) {
+    return new Promise((resolve, reject) => {
+      const index = client.initIndex(ALGOLIA_INDEX_NAME);
+      // Write to the algolia index
+      index.addObject(posting, (error, content) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(content);
+        }
+      });
+    })
+  } else {
+    return Promise.reject(new Error(`No posting is defined: ${posting}`));
+  }
+}
 
-});
+/**
+ * Deletes algolia indexes, and returns a promise.
+ * @param objectsIds
+ */
+function deleteAlgoliaIndexes(objectsIds) {
+  if (objectsIds && objectsIds.length) {
+    const promise = new Promise((resolve, reject) => {
+      const index = client.initIndex(ALGOLIA_INDEX_NAME);
+      index.deleteObjects(objectsIds, (error, content) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(content);
+        }
+      });
+    });
+    return promise;
+  } else {
+    return Promise.reject(new Error(`No objects ids: ${objectsIds}`));
+  }
+}
+
+function deleteStorageImages(imageIds) {
+  if (imageIds && imageIds.length) {
+    return Promise.all(
+      imageIds.map(id => storage.bucket(DEFAULT_IMG_BUCKET)
+      .deleteFiles({
+        prefix: `uploads/${id}`
+      })));
+  } else {
+    return Promise.reject(new Error(`No image ids provided: ${imageIds}`));
+  }
+}
+
+function deletePostingsForUserId(userId) {
+  if (userId) {
+    const collection = db.collection('postings');
+    return collection
+      .where('owner', '==', userId)
+      .get()
+      .then((snapshot) => {
+        let objects = [];
+        snapshot.forEach((posting) => {
+          objects.push(posting.data());
+        });
+        return objects;
+      })
+      .then(userPostings =>
+        userPostings.map((posting) =>
+          collection.doc(posting.id).delete()))
+      .then(promises =>
+        Promise.all(promises));
+  } else {
+    return Promise.reject(new Error(`No user id passes in: ${userId}`));
+  }
+}
+
+function getUserPostings(userId) {
+  if (userId) {
+    return collection
+      .where('owner', '==', userId)
+      .get()
+      .then((snapshot) => {
+        let objects = [];
+        snapshot.forEach((posting) => {
+          objects.push(posting.data());
+        });
+        return objects;
+      });
+  } else {
+    return Promise.reject(new Error(`No user id specified: ${userId}`));
+  }
+}
 
 exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').onDelete((snap, context) => {
   // Get the note document
   const posting = snap.data();
-
-  console.log(`posting was just deleted... with id ${context.params.postingId} ${JSON.stringify(posting, undefined, 4)}`);
-
-  // TODO this function needs to be executed once the posting is deleted
   // Add an 'objectID' field which Algolia requires
-  posting.objectID = context.params.postingId;
+  const objectID = context.params.postingId;
 
-  const index = client.initIndex(ALGOLIA_INDEX_NAME);
-
-  console.log(index);
-  index.deleteObject(posting.objectID, (error, content) => {
-    if (error) {
-      console.log(error);
-    }
-    console.log(`updating index for ${content.objectID}`)
-  });
-
-  storage.bucket(DEFAULT_IMG_BUCKET)
-    .deleteFiles({
-      prefix: `uploads/${posting.objectID}`
-    }).then((result) => {
-      console.log(`successfully deleted files for ${posting.objectID} with result: ${result}`);
-      return result;
-    }).catch((error) => {
-      console.log(`error deleting files for ${posting.objectID}: ${error}`);
-    });
-  return posting.objectID;
+  return deleteAlgoliaIndexes([objectID])
+    .then(() =>
+      deleteStorageImages([objectID]))
+    .then(() =>
+      console.log(`posting was just deleted... with id 
+        ${context.params.postingId} posting: ${JSON.stringify(posting, undefined, 4)}`))
+    .catch(error =>
+      console.log(`Error deleting files: ${error}`));
 });
 
 exports.onPostingUpdated = functions.firestore.document('postings/{postingId}').onUpdate((snap, context) => {
@@ -138,21 +199,29 @@ exports.onPostingUpdated = functions.firestore.document('postings/{postingId}').
 
 exports.onUserDelete = functions.auth.user().onDelete((user) => {
   const userId = user.uid;
-  console.log(`Deleting user ${userId}, ${user.email}`);
-  // TODO Delete user postings
 
-  // TODO Delete algolia references
-
-
+  return getUserPostings(userId)
+    .then(postings => {
+      const postingIds = postings.map(posting => posting.id);
+      return Promise.all([
+        deleteAlgoliaIndexes(postingIds),
+        deleteStorageImages(postingIds),
+        deletePostingsForUserId(userId),
+      ]);
+    })
+    .then(() =>
+      console.log(`Deleting user ${userId}, ${user.email}`))
+    .catch(error =>
+      console.log(`Error deleting postings for ${userId}, ${user.email}: ${error}`));
 });
 
 exports.testPostingSearch = functions.https.onRequest((request, response) => {
-  const db = admin.firestore();
-  db.collection('postings').get().then((snapshot) => {
+  const collection = db.collection('postings');
+  collection.get().then((snapshot) => {
     let objects = [];
     snapshot.forEach((posting) => {
       const data = posting.data();
-      console.log(data.location);
+      console.log(JSON.stringify(data, null, 2));
       objects.push(data);
     });
     response.send(JSON.stringify(objects, null, 2));
@@ -167,7 +236,6 @@ exports.testPostingSearch = functions.https.onRequest((request, response) => {
 exports.postingsMonitor = functions.pubsub.topic('postings-monitor')
   .onPublish((message) => {
     console.log(message.data);
-    const db = admin.firestore();
     db.collection('postings').get().then((snapshot) => {
       console.log(`So far, ${snapshot.size} posting on site`);
       return true;

@@ -64,6 +64,10 @@ export class PlatformMock {
   public getActiveElement(): any {
     return document['activeElement'];
   }
+
+  public isLandscape() {
+    return true;
+  }
 }
 
 export class StatusBarMock extends StatusBar {
@@ -192,6 +196,10 @@ export class SessionServiceProviderMock {
     }
     return Promise.resolve();
   }
+
+  searchByQuery() {
+    return Promise.resolve();
+  }
 }
 
 export class AdProviderMock {
@@ -212,8 +220,8 @@ export class LoadingControllerMock {
       dismiss: this.dismiss,
     }
   }
-
 }
+sinon.spy(LoadingControllerMock.prototype, 'create');
 
 export class AlertControllerMock {
   present = sinon.spy(() => Promise.resolve());
@@ -236,4 +244,36 @@ export class AngularFireAuthMock {
 
   authState = new Subject<any>();
 
+}
+
+export class ViewControllerMock{
+  readReady = {
+    subscribe(){
+
+    }
+  };
+  writeReady = {
+    subscribe(){
+
+    }
+  };
+
+  dismiss = sinon.spy();
+  _setHeader(){
+
+  }
+  _setNavbar(){
+
+  }
+  _setIONContent(){
+
+  }
+  _setIONContentRef(){
+
+  }
+}
+
+
+export class CategoryServiceProviderMock {
+  findCategory = sinon.spy((c) => {c});
 }
