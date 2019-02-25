@@ -47,26 +47,17 @@ export class SearchServiceProvider {
   }
 
   searchByQuery(options:any = {query: undefined, clear: false}) {
-    return Observable.create(observer => {
-      let query = options.query;
-      if (options.clear) {
-        this.getSearchIndex().clearCache();
-      }
-      this.getSearchIndex().search(query, (err, content) => {
-        if (err) {
-          console.error(err);
-          observer.error(err);
-          return;
-        } else {
-          observer
-            .next(content.hits
-              .map((p) => {
-                p.category = {id: p.category};
-                return p;
-              }));// use observable
-        }
-      });
-    })
+    let query = options.query;
+    if (options.clear) {
+      this.getSearchIndex().clearCache();
+    }
+    return Observable.fromPromise(
+      this.getSearchIndex().search(query)
+        .then((content) =>
+          content.hits.map((p) => {
+            p.category = {id: p.category};
+            return p;
+          })));
   }
 
 }

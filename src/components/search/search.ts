@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {DetailPage} from '../../pages/detail/detail';
 import {AlertController, ModalController, NavController, Platform} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {Observable} from 'rxjs/Observable';
@@ -7,6 +6,7 @@ import {CategoryPickPage} from '../../pages/category-pick/category-pick';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 import {EditPostingPage} from '../../pages/edit-posting/edit-posting';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
+import {DetailPage} from '../../pages/detail/detail';
 
 /**
  * Generated class for the SearchComponent component.
@@ -44,7 +44,9 @@ export class SearchComponent {
   }
 
   pushPage(posting) {
-    this.navCtrl.push(DetailPage, posting);
+    return this.navCtrl.push(DetailPage, {
+      id: posting.objectID
+    });
   }
 
   doSearch() {

@@ -37,8 +37,6 @@ describe('Profile component', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;
-
-    sinon.spy(component.loadingCtrl, 'create');
     sinon.spy(component.alertCtrl, 'create');
   });
 
