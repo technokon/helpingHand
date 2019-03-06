@@ -49,7 +49,9 @@
             item-right
             [zipCode]="posting.location">>
           </h-map-card>
-          <h-contact-card>
+          <h-contact-card
+            [postingId]="posting.objectID"
+            [postingTitle]="posting.title">
           </h-contact-card>
         </ion-col>
       </ion-row>

@@ -7,6 +7,7 @@ const algoliasearch = require('algoliasearch');
 const cors = require('cors');
 const express = require('express');
 const Storage = require('@google-cloud/storage');
+const sgMail = require('@sendgrid/mail');
 // to store these in a config variable please refer to:
 // https://firebase.google.com/docs/functions/config-env
 const ALGOLIA_ID = '1IIZWINWBN';//functions.config().algolia.app_id;
@@ -15,6 +16,8 @@ const ALGOLIA_SEARCH_KEY = '03fbd717c23738faacc6b24c36bbbccd';//functions.config
 const ALGOLIA_INDEX_NAME = 'prod_POSTING';
 const DEFAULT_IMG_BUCKET = 'helping-hand-1b53a.appspot.com';
 const PROJECT_ID = 'helping-hand-1b53a';
+const SENDGRID_API_KEY='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';
+sgMail.setApiKey(SENDGRID_API_KEY);
 
 const client = algoliasearch(ALGOLIA_ID, ALGOLIA_ADMIN_KEY);
 const storage = new Storage({
@@ -162,6 +165,53 @@ function getUserPostings(userId) {
   }
 }
 
+/**
+ * Sends an email message.
+ * @param body
+ * @returns {Promise<[ClientResponse , {}]>}
+ */
+function sendEmailMessage(body) {
+  const msg = {
+    to: body.to,
+    from: body.from,
+    subject: `Question: ${body.postingTitle}`,
+    text: `${body.name} has a question for you: ${body.message}`,
+    html: `This is a question regarding your
+      <a href="https://helping-hand.ca/${body.postingId}">${body.postingTitle}</a>
+      <strong>---Your helping-hand team---</strong>`,
+  };
+  if(body.phone) {
+    msg.text.concat(`${body.name} also left a contact:
+    ${body.phone}`);
+  }
+  return sgMail
+    .send(msg)
+    .catch((error) => {
+      console.log(`Error sending message via send grid: ${error}`);
+      throw error;
+    });
+}
+
+function getUserByUid(uid) {
+  return admin.auth()
+    .getUser(uid)
+    .catch((error) => {
+      console.log(`Error getting user by uid ${uid}: ${error}`);
+      throw error;
+    });
+}
+
+function retrievePostingByUid(uid) {
+  return db.collection('postings').doc(uid)
+    .get()
+    .then((doc) =>
+      doc.exists && doc.data())
+    .catch((error) => {
+      console.log(`Error retrieving posting by uid ${uid}: ${error}`);
+      throw error;
+    })
+}
+
 exports.onPostingDeleted = functions.firestore.document('postings/{postingId}').onDelete((snap, context) => {
   // Get the note document
   const posting = snap.data();
@@ -246,6 +296,49 @@ exports.postingsMonitor = functions.pubsub.topic('postings-monitor')
     return true;
   });
 
-//exports.helpingHandFunction = functions.https.onRequest(app);
+function checkHeaderMethod(request, allowedMethods) {
+  if (allowedMethods.includes(request.method)) {
+    return Promise.resolve();
+  } else {
+    const errorMessage = `Only ${allowedMethods} requests are allowed`;
+    const error = new Error(errorMessage);
+    error.code = 405;
+    error.message = errorMessage;
+    return Promise.reject(error);
+  }
+}
+
+function handlePreflightRequest(response) {
+  response.set('Access-Control-Allow-Methods', 'POST');
+  response.set('Access-Control-Max-Age', '3600');
+  response.header('Access-Control-Allow-Origin', '*');
+  response.header('Access-Control-Allow-Headers', 'Content-Type, Allow-Control-Allow-Origin');
+  return Promise.resolve(response.status(204).send(''));
+}
+
+exports.httpEmailMessage = functions.https.onRequest((request, response) => {
+  if (request.method === 'OPTIONS') {
+    return handlePreflightRequest(response);
+  } else {
+    response.header('Content-Type','application/json');
+    response.header('Access-Control-Allow-Origin', '*');
+    //response.header('Access-Control-Allow-Headers', 'Content-Type');
+    const data = request.body;
+    console.log(JSON.stringify(data, null, 2));
+    return checkHeaderMethod(request, ['POST', 'OPTIONS'])
+      .then(() => retrievePostingByUid(data.postingId))
+      .then((posting) =>
+        getUserByUid(posting.owner))
+      .then((userRecord) =>
+        sendEmailMessage(Object.assign(data,  { to: userRecord.email })))
+      .then((content) =>
+        response.send(content))
+      .catch((error) => {
+        console.log(`Error occured in deliviering the message: ${error}`);
+        response.send(error);
+        throw error;
+      });
+  }
+});
 
 

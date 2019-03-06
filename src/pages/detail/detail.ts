@@ -54,6 +54,7 @@ export class DetailPage implements OnInit {
       .subscribe(
         (posting) => {
           this.posting = posting;
+          console.log(JSON.stringify(posting, null, 2));
         },
         (error) => {
           console.log(`Error retrieving posting for ${postingId}`, error);

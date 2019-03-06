@@ -155,5 +155,5 @@ describe('Session service', () => {
         done();
       })
     });
-  })
+  });
 });

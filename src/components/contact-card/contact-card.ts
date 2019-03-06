@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
+import {SessionServiceProvider} from '../../providers/session-service/session-service';
+import {LoadingController} from 'ionic-angular';
+import {Observable} from 'rxjs/Observable';
 
 /**
  * Generated class for the ContactCardComponent component.
@@ -12,13 +15,42 @@ import { Component } from '@angular/core';
 })
 export class ContactCardComponent {
 
-
+  @Input() private postingId;
+  @Input() private postingTitle;
   public contact: any = {};
-  constructor() {
+  public messageSentContent;
+  public sendMessageError;
+  constructor(
+    public sessionService: SessionServiceProvider,
+    private loadingCtrl: LoadingController) {
   }
 
   actionMessage() {
-    console.log(this.contact);
+    const loading = this.loadingCtrl.create({
+      content: 'Sending your message...'
+    });
+    return Observable.fromPromise(loading.present())
+      .flatMapTo(this.sessionService.sendPostingMessage({
+        ...this.contact,
+        postingId: this.postingId,
+        postingTitle: this.postingTitle,
+      }))
+      .subscribe(
+        (content) => {
+          console.log(content);
+          this.messageSentContent = {
+            header: `Success`,
+            items: [
+              `Your message for ${this.postingTitle} has been sent successfully!`,
+            ]
+          };
+        },
+        (error) => {
+          console.log(`error sending message: ${error}`);
+          this.sendMessageError = error.message;
+          loading.dismiss();
+        },
+        () =>
+          loading.dismiss());
   }
-
 }
