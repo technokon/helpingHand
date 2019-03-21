@@ -14,6 +14,10 @@
       {
         "source": "/testPostingSearch",
         "function": "testPostingSearch"
+      },
+      {
+        "source": "/httpEmailMessage",
+        "function": "httpEmailMessage"
       }
     ]
   },

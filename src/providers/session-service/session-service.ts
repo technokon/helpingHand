@@ -1,10 +1,11 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable, OnInit} from '@angular/core';
 import {AlertController, LoadingController, ModalController} from 'ionic-angular';
 import {Subject} from 'rxjs/Subject';
 import {LoginPage} from '../../pages/login/login';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {Observable} from 'rxjs/Observable';
+import {RequestOptions} from '@angular/http';
 
 @Injectable()
 export class SessionServiceProvider{
@@ -194,6 +195,34 @@ export class SessionServiceProvider{
     return this.user.updateEmail(emailAddress)
       .then(() =>
         this.user.sendEmailVerification());
+  }
+
+  sendPostingMessage(data) {
+    if (!data) {
+      return Observable.throw(new Error('No data provided!!!'));
+    }
+    if (!this.user && !data.email) {
+      return Observable.throw(new Error('No email provided!!!'));
+    }
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('Allow-Control-Allow-Origin', '*');
+
+    const postData = {
+      'name': data.name,
+      'phone': data.phone,
+      'from': this.user && this.user.email || data.email,
+      'message': data.message,
+      'postingTitle': data.postingTitle,
+      'postingId': data.postingId,
+    };
+
+    console.log(JSON.stringify(data, null, 2));
+
+    return this.http.post(
+      'https://us-central1-helping-hand-1b53a.cloudfunctions.net/httpEmailMessage',
+      postData,
+      { headers });
   }
 
   startLoading() {

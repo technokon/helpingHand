@@ -149,7 +149,8 @@ export class SessionServiceProviderMock {
 
   public user = {
     uid: '123',
-    password: 'test123'
+    password: 'test123',
+    email: 'test@test.com',
   }
 
   public error;
@@ -199,6 +200,10 @@ export class SessionServiceProviderMock {
 
   searchByQuery() {
     return Promise.resolve();
+  }
+
+  sendPostingMessage() {
+    return Observable.of('Sucess!')
   }
 }
 

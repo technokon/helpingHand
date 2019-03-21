@@ -8,5 +8,11 @@ h-contact-card {
     &.align-center {
       text-align: center;
     }
+
+    p {
+      &.error-message {
+        color: #f53d3d;
+      }
+    }
   }
 }

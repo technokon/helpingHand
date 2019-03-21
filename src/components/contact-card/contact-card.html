@@ -1,4 +1,4 @@
-<ion-card>
+<ion-card *ngIf="!messageSentContent">
   <ion-card-header>
     Contact Poster
   </ion-card-header>
@@ -9,7 +9,7 @@
           [(ngModel)]="contact.name"
           placeholder="Your Name..."></ion-input>
       </ion-item>
-      <ion-item>
+      <ion-item *ngIf="!sessionService.user">
         <ion-input
           [(ngModel)]="contact.email"
           placeholder="Your Email..."></ion-input>
@@ -34,6 +34,13 @@
           Send Email
         </button>
       </ion-item>
+      <ion-item *ngIf="sendMessageError">
+        <p class="error-message"> {{ sendMessageError }}</p>
+      </ion-item>
     </ion-list>
   </ion-card-content>
 </ion-card>
+<h-confirmation-card
+  *ngIf="messageSentContent"
+  [confirmationContent]="messageSentContent">
+</h-confirmation-card>
