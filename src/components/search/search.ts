@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AlertController, ModalController, NavController, Platform} from 'ionic-angular';
 import {SearchServiceProvider} from '../../providers/search-service/search-service';
 import {Observable} from 'rxjs/Observable';
@@ -7,6 +7,8 @@ import {SessionServiceProvider} from '../../providers/session-service/session-se
 import {EditPostingPage} from '../../pages/edit-posting/edit-posting';
 import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
 import {DetailPage} from '../../pages/detail/detail';
+import {Subject} from 'rxjs/Subject';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 /**
  * Generated class for the SearchComponent component.
@@ -18,10 +20,11 @@ import {DetailPage} from '../../pages/detail/detail';
   selector: 'h-search',
   templateUrl: 'search.html',
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit{
 
   public postings: Observable<any>;
-  public search;
+  public search$ = new Subject<string>();
+  public searchButton$ = new BehaviorSubject<any>(undefined);
   public category;
   public selectedCategory;
   public location;
@@ -29,18 +32,29 @@ export class SearchComponent {
 
   constructor(private navCtrl: NavController,
               public modalCtrl: ModalController,
-              private searchService: SearchServiceProvider,
+              public searchService: SearchServiceProvider,
               public platform: Platform,
               public sessionService: SessionServiceProvider,
               public firebaseService: FirebaseServiceProvider,
               public alertCtrl: AlertController,) {
-    this.init();
   }
 
-  init() {
-    this.subscribeToCategorySearch();
-    this.subscribeToUidSearch();
-    this.postings = this.searchService.searchByQuery();
+  ngOnInit() {
+    this.postings = Observable.merge(
+      this.categorySearch$(),
+      this.uidSearch$(),
+      this.textSearch$(),
+      this.searchButtonClick$(),
+    );
+  }
+
+  textSearch$() {
+    return this.search$
+      .asObservable()
+      .debounceTime(400)
+      .distinctUntilChanged()//---abs---abcdefg---...
+      .do(console.log)
+      .flatMap((text) => this.performSearch$(text))//--o(abc)--o(abcdefg)-...
   }
 
   pushPage(posting) {
@@ -49,52 +63,55 @@ export class SearchComponent {
     });
   }
 
-  doSearch() {
-    this.performSearch();
+  private searchButtonClick$() {
+    return this.searchButton$
+      .asObservable()
+      .flatMap(text => this.performSearch$(text));
   }
 
-  private subscribeToCategorySearch() {
-    this.searchService.getCategorySearch().subscribe(searchCategory => {
-      this.searchByCategory(searchCategory);
-      this.selectedCategory = searchCategory;
-      this.category = searchCategory.name;
-    });
+  private categorySearch$() {
+    return this.searchService.getCategorySearch()
+      .do(searchCategory => {
+        this.selectedCategory = searchCategory || undefined;
+      })
+      .flatMap(searchCategory => this.searchByCategory$(searchCategory))
   }
 
-  private subscribeToUidSearch() {
-    this.searchService.getUidSearch().subscribe(uid => {
-      this.searchByUid(uid);
-    });
+  private uidSearch$() {
+    return this.searchService
+      .getUidSearch()
+      .flatMap(uid =>
+        this.searchByUid$(uid));
   }
 
-  private searchByCategory(searchCategory) {
-    this.postings = this.searchService.searchByQuery({
-      query: {
-        filters: `category:${searchCategory.id}`,
-      }
-    });
+  private searchByCategory$(searchCategory) {
+    const query = {
+      filters: undefined,
+    };
+    if (searchCategory && searchCategory.id) {
+      query.filters = `category:${searchCategory.id}`;
+    }
+    return this.searchService.searchByQuery({ query });
   }
 
-  private searchByUid(uid) {
-    this.postings = this.searchService.searchByQuery({
+  private searchByUid$(uid) {
+    return this.searchService.searchByQuery({
       query: {
         filters: `owner:${uid}`
       }
     });
   }
 
-  updateList($event) {
-    this.performSearch();
-  }
 
   showCategorySelectionModal($event) {
     $event.preventDefault();
     this.modalCtrl.create(CategoryPickPage).present();
   }
 
-  performSearch(clear = false) {
+  performSearch$(text?, clear = false) {
+    console.log('performing search...')
     let query = {
-      query: this.search,
+      query: text,
       filters: undefined,
     }
 
@@ -102,14 +119,7 @@ export class SearchComponent {
       query.filters = `category:${this.selectedCategory.id}`;
     }
 
-    this.postings = this.searchService.searchByQuery({query, clear: clear});
-  }
-
-  clearSelectedCategory() {
-    this.selectedCategory = null;
-    this.category = null;
-
-    this.doSearch();
+    return this.searchService.searchByQuery({query, clear: clear});
   }
 
   modifyAd(posting, $event) {
@@ -138,13 +148,12 @@ export class SearchComponent {
                 this.loading.dismiss();
               }
             };
-            this.firebaseService.deletePosting(posting)
+            this.firebaseService.deletePosting(posting)// *** stream 123dawlish
               .subscribe(
-                (data) => {
-                  this.performSearch(true);
-                },
+                () =>
+                  this.searchButton$.next(undefined),
                 (error) => {
-                  console.log(`error deleting posing: ${{posting}}`);
+                  console.log(`error deleting posing: ${posting}`);
                   dismiss();
                   },
                 () => {

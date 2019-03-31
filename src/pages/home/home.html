@@ -55,7 +55,7 @@
   <!--</ion-refresher>-->
 
   <h-search
-    [hidden]="!showSearch">
+    *ngIf="showSearch">
   </h-search>
 
   <!--<ion-infinite-scroll-->
