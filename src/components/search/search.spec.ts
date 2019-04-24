@@ -1,71 +1,99 @@
 import {async, TestBed} from '@angular/core/testing';
-import {IonicModule, NavController, Platform} from 'ionic-angular';
+import {AlertController, IonicModule, ModalController, NavController, Platform} from 'ionic-angular';
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
-import {AdProviderMock, NavMock, PlatformMock, SessionServiceProviderMock} from '../../../test-config/mocks-ionic';
+import {
+  AdProviderMock, AlertControllerMock, FirebaseServiceProviderMock, ModalControllerMock, NavMock, PlatformMock,
+  SearchServiceProviderMock,
+  SessionServiceProviderMock
+} from '../../../test-config/mocks-ionic';
 import {SessionServiceProvider} from '../../providers/session-service/session-service';
 import {AdProvider} from '../../providers/ad/ad';
-import {PostingComponent} from './posting';
+import {SearchComponent} from './search';
+import {SearchServiceProvider} from '../../providers/search-service/search-service';
+import {FirebaseServiceProvider} from '../../providers/firebase-service/firebase-service';
+import {Observable} from 'rxjs/Observable';
 
-describe('Posting form component', () => {
+describe('Search component', () => {
   let fixture;
   let component;
 
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [PostingComponent],
+      declarations: [SearchComponent],
       imports: [
-        IonicModule.forRoot(PostingComponent)
+        IonicModule.forRoot(SearchComponent)
       ],
       providers: [
-        {provide: SessionServiceProvider, useClass: SessionServiceProviderMock},
-        { provide: Platform, useClass: PlatformMock },
-        {provide: AdProvider, useClass: AdProviderMock},
         {provide: NavController, useClass: NavMock},
+        { provide: ModalController, useClass: ModalControllerMock },
+        {provide: SearchServiceProvider, useClass: SearchServiceProviderMock},
+        {provide: Platform, useClass: PlatformMock},
+        {provide: SessionServiceProvider, useClass: SessionServiceProviderMock},
+        {provide: FirebaseServiceProvider, useClass: FirebaseServiceProviderMock},
+        {provide: AlertController, useClass: AlertControllerMock},
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
     })
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PostingComponent);
+    fixture = TestBed.createComponent(SearchComponent);
     component = fixture.componentInstance;
   });
 
   it('should be created', () => {
     component.init = sinon.spy();
-    expect(component instanceof PostingComponent).toBe(true);
+    expect(component instanceof SearchComponent).toBe(true);
   });
 
   describe('ngOnInit', () => {
     it('should call initial setup methods', () => {
-      component.subscribeToEditPosting = jasmine.createSpy('subscribeToEditPosting spy')
+      component.categorySearch$ = sinon.spy(() => Observable.of(1));
+      component.uidSearch$ = sinon.spy(() => Observable.of(2));
+      component.textSearch$ = sinon.spy(() => Observable.of(3));
+      component.searchButtonClick$ = sinon.spy(() => Observable.of(4));
+      component.deletePostingTrigger$ = sinon.spy(() => Observable.of(5));
       component.ngOnInit();
-      expect(component.subscribeToEditPosting).toHaveBeenCalled();
+      expect(component.postings).toBeDefined();
+      expect(component.categorySearch$.called).toBeTruthy();
+      expect(component.uidSearch$.called).toBeTruthy();
+      expect(component.textSearch$.called).toBeTruthy();
+      expect(component.searchButtonClick$.called).toBeTruthy();
+      expect(component.deletePostingTrigger$.called).toBeTruthy();
     })
   });
 
-  describe('onAdPosted', () => {
-    it('shold perform logic when ad posted event occurs and it is not empty', () => {
-      const event = {
-        result: 'success',
-        data: {
-          link: { abc: 'abc'}
-        }
-      }
-      component.onAdPosted(event);
-      expect(component.adPosted).toBe(true);
-      expect(component.posting).toEqual(event.data.link);
+  describe('textSearch$', () => {
+    it('should return a stream', () => {
+      expect(component.textSearch$() instanceof Observable).toBeTruthy();
     });
-    it('shold perform logic when ad posted event occurs and it is empty', () => {
-      const event = {
-      }
-      component.onAdPosted();
-      expect(component.adPosted).toBe(false);
-      expect(component.posting).toEqual(undefined);
+  });
+
+  describe('uidSearch$', () => {
+    it('should return a stream', () => {
+      sinon.spy(component.searchService, 'getUidSearch');
+      expect(component.uidSearch$() instanceof Observable).toBeTruthy();
+      expect(component.searchService.getUidSearch.called).toBeTruthy();
     });
-  })
+  });
+
+  describe('categorySearch$', () => {
+    it('should return a stream', () => {
+      sinon.spy(component.searchService, 'getCategorySearch');
+      expect(component.categorySearch$() instanceof Observable).toBeTruthy();
+      expect(component.searchService.getCategorySearch.called).toBeTruthy();
+    });
+  });
+
+  describe('deletePostingTrigger$', () => {
+    it('should return a stream', () => {
+      component.performSearch$ = sinon.spy(() => Observable.of(1))
+      expect(component.deletePostingTrigger$() instanceof Observable).toBeTruthy();
+      expect(component.performSearch$.called).toBeTruthy();
+    });
+  });
 
 });

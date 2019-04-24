@@ -25,8 +25,10 @@ export class SearchComponent implements OnInit{
   public postings: Observable<any>;
   public search$ = new Subject<string>();
   public searchButton$ = new BehaviorSubject<any>(undefined);
+  public deletePosting$ = new Subject<any>();
   public category;
   public selectedCategory;
+  public text;
   public location;
   public loading;
 
@@ -41,10 +43,11 @@ export class SearchComponent implements OnInit{
 
   ngOnInit() {
     this.postings = Observable.merge(
-      this.categorySearch$(),
-      this.uidSearch$(),
-      this.textSearch$(),
-      this.searchButtonClick$(),
+      this.categorySearch$(),//---landscaping--electrical--...
+      this.uidSearch$(),//--123--432---...
+      this.textSearch$(),//---abc--abcde---...
+      this.searchButtonClick$(),//---click---click---...
+      this.deletePostingTrigger$(),//--delete1--delete2...
     );
   }
 
@@ -53,20 +56,27 @@ export class SearchComponent implements OnInit{
       .asObservable()
       .debounceTime(400)
       .distinctUntilChanged()//---abs---abcdefg---...
-      .do(console.log)
-      .flatMap((text) => this.performSearch$(text))//--o(abc)--o(abcdefg)-...
+      .do((text) => {
+        this.text = text;
+      })
+      .flatMap(() =>//--o(result1)--o(result2)-... -> --result1--result2--...
+        this.performSearch$());
   }
 
-  pushPage(posting) {
-    return this.navCtrl.push(DetailPage, {
-      id: posting.objectID
-    });
+  deletePostingTrigger$() {
+    return this.deletePosting$
+      .asObservable()
+      .flatMap(([posting, dismiss]) =>
+        this.firebaseService.deletePosting(posting)
+          .do(dismiss))
+      .flatMapTo(this.performSearch$());
   }
+
 
   private searchButtonClick$() {
     return this.searchButton$
       .asObservable()
-      .flatMap(text => this.performSearch$(text));
+      .flatMap(() => this.performSearch$());
   }
 
   private categorySearch$() {
@@ -74,25 +84,16 @@ export class SearchComponent implements OnInit{
       .do(searchCategory => {
         this.selectedCategory = searchCategory || undefined;
       })
-      .flatMap(searchCategory => this.searchByCategory$(searchCategory))
+      .flatMap(() => this.performSearch$())
   }
 
   private uidSearch$() {
     return this.searchService
-      .getUidSearch()
-      .flatMap(uid =>
+      .getUidSearch()//--123--457--...
+      .flatMap(uid =>//--result1--result2...
         this.searchByUid$(uid));
   }
 
-  private searchByCategory$(searchCategory) {
-    const query = {
-      filters: undefined,
-    };
-    if (searchCategory && searchCategory.id) {
-      query.filters = `category:${searchCategory.id}`;
-    }
-    return this.searchService.searchByQuery({ query });
-  }
 
   private searchByUid$(uid) {
     return this.searchService.searchByQuery({
@@ -102,16 +103,10 @@ export class SearchComponent implements OnInit{
     });
   }
 
-
-  showCategorySelectionModal($event) {
-    $event.preventDefault();
-    this.modalCtrl.create(CategoryPickPage).present();
-  }
-
   performSearch$(text?, clear = false) {
     console.log('performing search...')
     let query = {
-      query: text,
+      query: text || this.text,
       filters: undefined,
     }
 
@@ -121,6 +116,18 @@ export class SearchComponent implements OnInit{
 
     return this.searchService.searchByQuery({query, clear: clear});
   }
+
+  pushPage(posting) {
+    return this.navCtrl.push(DetailPage, {
+      id: posting.objectID
+    });
+  }
+
+  showCategorySelectionModal($event) {
+    $event.preventDefault();
+    this.modalCtrl.create(CategoryPickPage).present();
+  }
+
 
   modifyAd(posting, $event) {
     $event.stopPropagation();
@@ -148,25 +155,13 @@ export class SearchComponent implements OnInit{
                 this.loading.dismiss();
               }
             };
-            this.firebaseService.deletePosting(posting)// *** stream 123dawlish
-              .subscribe(
-                () =>
-                  this.searchButton$.next(undefined),
-                (error) => {
-                  console.log(`error deleting posing: ${posting}`);
-                  dismiss();
-                  },
-                () => {
-                  dismiss();
-                });
+            this.deletePosting$.next([posting, dismiss]);
             this.loading = this.sessionService.startLoading();
           }
         }
       ]
     });
     return confirm.present();
-
-    // todo after delete, refresh results
   }
 
 
