@@ -1,21 +1,21 @@
 <ion-list *ngIf="!platform.isLandscape()">
   <ion-item>
     <ion-input
-      [(ngModel)]="search"
-      (keyup)="updateList($event)"
+      #text
+      (keyup)="search$.next($event.target.value)"
       placeholder="Search..."></ion-input>
   </ion-item>
   <ion-item>
     <div
       class="clear-on-hover"
-      [class.placeholder]="!category"
+      [class.placeholder]="!selectedCategory"
       tappable
       (click)="showCategorySelectionModal($event)">
-      {{ category || 'Choose category...' }}
+      {{ (selectedCategory && selectedCategory.name) || 'Choose category...' }}
     </div>
     <button
-      *ngIf="category"
-      (click)="clearSelectedCategory()"
+      *ngIf="selectedCategory"
+      (click)="searchService.getCategorySearch().next()"
       class="clear-button"
       ion-button
       clear
@@ -31,7 +31,7 @@
       ion-button
       full
       color="orange"
-      (click)="doSearch()">Search</button>
+      (click)="searchButton$.next(text.value)">Search</button>
   </ion-item>
 </ion-list>
 
@@ -41,8 +41,8 @@
       <ion-col col-2>
         <ion-item>
           <ion-input
-            [(ngModel)]="search"
-            (keyup)="updateList($event)"
+            #text
+            (keyup)="search$.next($event.target.value)"
             placeholder="Search..."></ion-input>
         </ion-item>
       </ion-col>
@@ -50,14 +50,14 @@
         <ion-item>
           <div
             class="clear-on-hover"
-            [class.placeholder]="!category"
+            [class.placeholder]="!selectedCategory"
             tappable
             (click)="showCategorySelectionModal($event)">
-            {{ category || 'Choose category...' }}
+            {{ (selectedCategory && selectedCategory.name) || 'Choose category...' }}
           </div>
           <button
-            *ngIf="category"
-            (click)="clearSelectedCategory()"
+            *ngIf="selectedCategory"
+            (click)="searchService.getCategorySearch().next()"
             class="clear-button"
             ion-button
             clear
@@ -77,7 +77,7 @@
             ion-button
             full
             color="orange"
-            (click)="doSearch()">Search</button>
+            (click)="searchButton$.next(text.value)">Search</button>
       </ion-col>
     </ion-row>
   </ion-grid>

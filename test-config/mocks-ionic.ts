@@ -137,6 +137,16 @@ export class UploadServiceProviderMock {
 
 export class SearchServiceProviderMock {
 
+  getUidSearch() {
+    return Observable.of(123);
+  }
+
+  getCategorySearch() {
+    return Observable.of({
+      name: 'test'
+    });
+  }
+
 }
 
 export class SessionServiceProviderMock {
